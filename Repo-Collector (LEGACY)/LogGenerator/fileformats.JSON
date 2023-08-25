@@ -1,0 +1,115 @@
+{
+    "languageToAnalyze": [
+        {
+            "language": "java",
+            "extensions": [
+                ".java"
+            ]
+        },
+        {
+            "language": "javascript",
+            "extensions": [
+                ".js"
+            ]
+        },
+        {
+            "language": "python",
+            "extensions": [
+                ".py"
+            ]
+        },
+        {
+            "language": "ruby",
+            "extensions": [
+                ".rb"
+            ]
+        },
+        {
+            "language": "c",
+            "extensions": [
+                ".c"
+            ]
+        },
+        {
+            "language": "c++",
+            "extensions": [
+                ".cpp",
+                ".cc",
+                ".cxx",
+                ".h",
+                ".hpp",
+                ".hh",
+                ".hxx"
+            ]
+        },
+        {
+            "language": "c++NoHead",
+            "extensions": [
+                ".c",
+                ".cpp",
+                ".cc",
+                ".cxx"
+            ]
+        },
+        {
+            "language": "c#",
+            "extensions": [
+                ".cs"
+            ]
+        },
+        {
+            "language": "objective-c",
+            "extensions": [
+                ".m"
+            ]
+        },
+        {
+            "language": "objective-c++",
+            "extensions": [
+                ".mm"
+            ]
+        },
+        {
+            "language": "swift",
+            "extensions": [
+                ".swift"
+            ]
+        },
+        {
+            "language": "php",
+            "extensions": [
+                ".php"
+            ]
+        },
+        {
+            "language": "perl",
+            "extensions": [
+                ".pl"
+            ]
+        },
+        {
+            "language": "perl6",
+            "extensions": [
+                ".pl6"
+            ]
+        },
+        {
+            "language": "perl-6",
+            "extensions": [
+                ".pl6"
+            ]
+        },
+        {
+            "language": "perl-5",
+            "extensions": [
+                ".pl"
+            ]
+        },
+        {
+            "language": "perl-5.6",
+            "extensions": [
+                ".pl"
+            ]
+        }
+    ]
+} 
