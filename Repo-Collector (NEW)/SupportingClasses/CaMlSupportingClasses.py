@@ -1,4 +1,6 @@
 import os
+import hashlib
+
 
 # Print iterations progress
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
@@ -40,3 +42,6 @@ def searchFileName(path, fileName):
                 #code to generate a list of paths of files to generate logs for
                 filesToDo.append(os.path.join(root, file).split(path)[1])
     return filesToDo
+
+def hashGen(toHash):
+    return hashlib.sha256(toHash.encode('utf-8')).hexdigest()
