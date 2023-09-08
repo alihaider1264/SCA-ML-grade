@@ -27,16 +27,18 @@ submodules = False
 multibranch = False
 defJSON = ""
 language = ""
-noDupe = False
-hashMemory = []
+noDupe = True
 keepGit = False
+skipForks = True
 maxThreads = 20
 
 
 
 def processRepo(repo, repoInfo : json):
+    error = False
     global isBatchJson, outputLocation, branch, submodules, multibranch, defJSON, language, noDupe, repoLocation
-
+    if (skipForks and repoInfo['isFork'] == True):
+        return
     #start timer
     startTime = time.time()
     """Folder Structure:
@@ -73,117 +75,89 @@ def processRepo(repo, repoInfo : json):
                 return
             else:
                 #delete old files
-                for root, dirs, files in os.walk(basePath):
-                    for file in files:
-                        os.remove(os.path.join(root, file))     
-    repoClass = Repository(repo , only_modifications_with_file_types=['.py'],clone_repo_to = gitOutputFolder)
-    for commit in repoClass.traverse_commits():
-        for file in commit.modified_files:
-            if (file.filename.endswith(".py") and file.filename.split(".")[0] != ''):
-                fileNameNoExt = file.filename.split(".")[0]
-                if file.source_code is not None:
+                process1 = subprocess.run("rmdir "+ basePath + " /s /q", shell=True)
+    try:   
+        repoClass = Repository(repo , only_modifications_with_file_types=['.py'],clone_repo_to = gitOutputFolder)
+        for commit in repoClass.traverse_commits():
+            for file in commit.modified_files:
+                if (file.filename.endswith(".py") and file.filename.split(".")[0] != ''):
+                    if (file.new_path is not None):
+                        filePath = os.path.join(basePath,file.new_path)
+                    else:
+                        filePath = os.path.join(basePath, file.filename)
+                    
 
-                    #TODO check file.newpath and include path in foldername
-                    filePath = os.path.join(basePath,file.new_path)
-                    #generate all folders in path
-                    if (not os.path.exists(filePath)):
-                        os.makedirs(filePath)
-                    
-                    exsistingFiles = os.listdir(filePath)
-                    count = str((len(exsistingFiles)/2)).split(".")[0]
-                    
-                    #write commit data
-                    skip = False
-                    #Rewrite this eventually. 
-                    if (noDupe):
-                        #check for duplicates
-                        if (len(hashMemory) > 0):
-                            for i in range(len(hashMemory)):
-                                if (hashMemory[i][0] == commit.hash):
-                                    if (repoInfo['isFork']):
-                                        #if it's a fork stop the commit from being added
-                                        skip = True
-                                    else :
-                                        #delete the other commit
-                                        os.remove(hashMemory[i][1])
-                                        #delete the other commit info
-                                        os.remove(hashMemory[i][1].split(".")[0] + ".json")
-                                        #write 2 dummy file
-                                        commitData = open(hashMemory[i][1].split(".")[0]+ "DUPLICATE" + ".txt", "w", encoding="utf8")
-                                        commitData.write("DUPLICATE")
-                                        commitData.close()
-                                        commitData = open(hashMemory[i][1].split(".")[0] +"DUPLICATE" +".jsn", "w")
-                                        commitData.write("DUPLICATE")
-                                        commitData.close()
-                                        
-                                        #remove from memory
-                                        hashMemory.pop(i)
-                                        break
-                    if (skip):
-                        #write 2 dummy file
-                        commitData = open(os.path.join(filePath, count+ "DUPLICATE" + ".txt"), "w", encoding="utf8")
-                        commitData.write("DUPLICATE")
-                        commitData.close()
-                        commitData = open(os.path.join(filePath,count+ "DUPLICATE" + ".jsn"), "w")
-                        commitData.write("DUPLICATE")
-                        commitData.close()
+                    if file.source_code is not None:
+                        fileNameNoExt = file.filename.split(".")[0]
+                        #TODO check file.newpath and include path in foldername
+                        #generate all folders in path
+                        if (not os.path.exists(filePath)):
+                            os.makedirs(filePath)
                         
-                        continue
-                    #generate hash
-                    hash = [commit.hash, os.path.join(repoName, file.new_path, count + ".py")]            
-                    hashMemory.append(hash)
-                    
-                    
-                    commitData = open(os.path.join(filePath, count + ".py"), "w", encoding="utf8")
-                    commitData.write(str(file.source_code))
-                    commitData.close()
-                    #write commit info
-                    commitInfo = open(os.path.join(filePath, count + ".json"), "w")
-                    commitInfoJSON = {}
-                    commitInfoJSON['hash'] = str(commit.hash)
-                    commitInfoJSON['author'] = str(commit.author.name)
-                    commitInfoJSON['author_email'] = str(commit.author.email)
-                    commitInfoJSON['author_date'] = str(commit.author_date)
-                    commitInfoJSON['committer'] = str(commit.committer.name)
-                    commitInfoJSON['committer_email'] = str(commit.committer.email)
-                    commitInfoJSON['committer_date'] = str(commit.committer_date)
-                    commitInfoJSON['msg'] = str(commit.msg)
-                    commitInfoJSON['merge'] = str(commit.merge)
-                    commitInfoJSON['parents'] = str(commit.parents)
-                    commitInfoJSON['author_timezone'] = str(commit.author_timezone)
-                    commitInfoJSON['committer_timezone'] = str(commit.committer_timezone)
-                    commitInfoJSON['branches'] = str(commit.branches)
-                    commitInfoJSON['in_main_branch'] = str(commit.in_main_branch)
-                    
-                    
+                        exsistingFiles = os.listdir(filePath)
+                        count = str((len(exsistingFiles)/2)).split(".")[0]
+                        
+                        #write commit data
+                        skip = False
+                        
+                        
+                        commitData = open(os.path.join(filePath, count + ".py"), "w", encoding="utf8")
+                        commitData.write(str(file.source_code))
+                        commitData.close()
+                        #write commit info
+                        commitInfo = open(os.path.join(filePath, count + ".json"), "w")
+                        commitInfoJSON = {}
+                        commitInfoJSON['hash'] = str(commit.hash)
+                        commitInfoJSON['author'] = str(commit.author.name)
+                        commitInfoJSON['author_email'] = str(commit.author.email)
+                        commitInfoJSON['author_date'] = str(commit.author_date)
+                        commitInfoJSON['committer'] = str(commit.committer.name)
+                        commitInfoJSON['committer_email'] = str(commit.committer.email)
+                        commitInfoJSON['committer_date'] = str(commit.committer_date)
+                        commitInfoJSON['msg'] = str(commit.msg)
+                        commitInfoJSON['merge'] = str(commit.merge)
+                        commitInfoJSON['parents'] = str(commit.parents)
+                        commitInfoJSON['author_timezone'] = str(commit.author_timezone)
+                        commitInfoJSON['committer_timezone'] = str(commit.committer_timezone)
+                        commitInfoJSON['branches'] = str(commit.branches)
+                        commitInfoJSON['in_main_branch'] = str(commit.in_main_branch)
+                        
+                        
+                        
 
-                    commitInfo.write(json.dumps(commitInfoJSON))
-                    #TODO: Add commit info
-                    commitInfo.close()
-                elif (os.path.exists(filePath)): 
-                    commitData = open(os.path.join(filePath, "DELETED" + ".NA"), "w", encoding="utf8")
-                    commitData.write("DELETED")
-                    commitData.close()
+                        commitInfo.write(json.dumps(commitInfoJSON))
+                        #TODO: Add commit info
+                        commitInfo.close()
+                    elif (os.path.exists(filePath)): 
+                        commitData = open(os.path.join(filePath, "DELETED" + ".NA"), "w", encoding="utf8")
+                        commitData.write("DELETED")
+                        commitData.close()
     #delete git folder fix later (Right now will only work on windows)
-                
+    except Exception as e:
+        error = True
     process1 = subprocess.run("rmdir "+ gitOutputFolder + " /s /q", shell=True)
 
+    if (error):
+        #check for basepath, if it exists delete it
+        if (os.path.exists(basePath)):
+            process1 = subprocess.run("rmdir "+ basePath + " /s /q", shell=True)
+        return
     #end timer
     endTime = time.time()
+    
     #write the git.info file and add time to it 
     gitInfo = open(os.path.join(basePath, "git.info"), "w")
     gitInfo.write(json.dumps(repoInfo))
     gitInfo.write("\n")
     gitInfo.write("Time to generate: " + str(endTime - startTime))
     gitInfo.close()
+        
+    
 
 
 def exit_handler():
     
-    global outputLocation, hashMemory
-    hashFile = open(os.path.join(outputLocation, "hashes.txt"), "a")
-    hashFile.write(json.dumps(hashMemory))
-    hashFile.close()
+    global outputLocation
 
 
 
@@ -205,7 +179,7 @@ def main():
 
     args = parser.parse_args()
 
-    global isBatchJson, outputLocation, branch, submodules, multibranch, defJSON, language, noDupe, repoLocation, keepGit, maxThreads, hashMemory
+    global isBatchJson, outputLocation, branch, submodules, multibranch, defJSON, language, noDupe, repoLocation, keepGit, maxThreads
 
     isBatchJson = args.repo.endswith(".json")
     outputLocation = args.output
@@ -217,14 +191,7 @@ def main():
     maxThreads = args.multithread
     repoLocation = []
     #check for hash file
-    try:
-        if (os.path.exists(os.path.join(outputLocation, "hashes.txt"))):
-            hashFile = open(os.path.join(outputLocation, "hashes.txt"), "r")
-            hashMemory = json.load(hashFile)
-            hashFile.close()
-    except:
-        print ("Hash file is corrupted, deleting")
-        os.remove(os.path.join(outputLocation, "hashes.txt"))
+
     if (isBatchJson):
         #check for file specified
         if (os.path.exists(args.repo)):
