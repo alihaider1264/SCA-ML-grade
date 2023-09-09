@@ -13,44 +13,34 @@ import atexit
 #A new repository collector which uses pydriller
 #MISSING FEATURES: 
     #Method Seperation/Class Seperation (Probably should be done outside of the downloader. Maybe make a parser for this?)
-    #Multithreading will add later
+    #Duplication detection: maybe do outside of the downloader for simplicity? It may take up a good amount of memory so look into this.
+    #Non JSON repo downloading
 
 #NEW FEATURES
     #Easier to manage
-    #Cross platform
 
-isBatchJson = False
+
+isBatchJson = False #To Impliment
 repoLocation = []
 outputLocation = ""
-branch = ""
-submodules = False
-multibranch = False
-defJSON = ""
-language = ""
-noDupe = True
-keepGit = False
-skipForks = True
+submodules = False #To Impliment, it's not that useful for this project but might be useful for others.
+multibranch = False #To Impliment, will generate outputs for every branch. I don't see this adding much benifit.
+defJSON = "" #To Impliment, will allow for custom file definitions. Currently the language is hardcoded to python
+language = "" #To impliment and use with defJSON
+noDupe = True #To Imppliment, potnetially outside of the downloader
+keepGit = False #To Impliment, will keep the git files for later use
+skipForks = True #To Impliment, will skip forks. For now SEART has the option. 
 maxThreads = 20
 
 
 
 def processRepo(repo, repoInfo : json):
     error = False
-    global isBatchJson, outputLocation, branch, submodules, multibranch, defJSON, language, noDupe, repoLocation
+    global isBatchJson, outputLocation, submodules, multibranch, defJSON, language, noDupe, repoLocation
     if (skipForks and repoInfo['isFork'] == True):
         return
     #start timer
     startTime = time.time()
-    """Folder Structure:
-    (RepoName)
-        RepoInfo.JSON
-        (FileName)
-            0.py (Commit Data)
-            0.json (Commit Info)
-            1.py
-            1.json
-            ...
-            """
     basePath = ''
     repoName = ''
     #create output folder
@@ -166,7 +156,7 @@ def main():
     parser = argparse.ArgumentParser(description='The thing that makes LogGen and GitDownloader work together')
     parser.add_argument('-r', '--repo', help='The Repo to generate diffs for (Assumes internet repos or batch json file from SEART)', required=True)
     parser.add_argument('-o', '--output', help='The output folder', required=True)
-    parser.add_argument('-b', '--branch', help='Specify the branch, write all for every branch', required=False)
+    parser.add_argument('-b', '--multibranch', help='Specify the branch, write all for every branch', required=False)
     parser.add_argument('-s', '--submodules', help='Download submodules', default=False, action="store_true")
     parser.add_argument('-m', '--multithread', help='Enter the amount of threads, default is 20', required=False, default=20, type=int)
     parser.add_argument('-d', '--defJSON', help='the definitions of the file formats', required=False)
@@ -179,11 +169,11 @@ def main():
 
     args = parser.parse_args()
 
-    global isBatchJson, outputLocation, branch, submodules, multibranch, defJSON, language, noDupe, repoLocation, keepGit, maxThreads
+    global isBatchJson, outputLocation, submodules, multibranch, defJSON, language, noDupe, repoLocation, keepGit, maxThreads
 
     isBatchJson = args.repo.endswith(".json")
     outputLocation = args.output
-    branch = args.branch
+    multibranch = args.branch
     submodules = args.submodules
     defJSON = args.defJSON
     language = args.language
