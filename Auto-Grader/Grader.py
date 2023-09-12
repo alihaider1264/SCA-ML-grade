@@ -5,6 +5,7 @@ import os
 import pandas as pd
 import datetime
 import datetime
+import numpy as np
 
 #commit comment keywords for code grade adjustment
 positiveKeyWords = ['fix', 'resolve', 'resolve', 'resolved', 'resolves', 'resolving', 'close', 'closed', 'closes', 'closing', 'fixes', 'fixed', 'fixing', 'patch', 'patched', 'patching', 'update', 'updated', 'updating', 'upgrade', 'upgraded', 'upgrading', 'improve', 'improved', 'improving', 'improvement', 'improvements', 'improves', 'improving', 'enhance', 'enhanced', 'enhances', 'enhancing', 'enhancement', 'enhancements']
@@ -95,19 +96,89 @@ def baseRepositoryGrading(repoInfo):
     return repoBaseScore
     
 def commitFolderGrading (filesToGradeList):
+    #filesToGradeList is formatted as [code path, json path]
     numberOfCommits = len(filesToGradeList)
-    #TO:DO, PORT
+    
+    for i in range(len(filesToGradeList)):
+        #get files
+        commitdata = ''
+        commitinfo = ''
+        with open(filesToGradeList[i][0], 'r', encoding="utf8") as file:
+            commitdata = file.read()
+        with open(filesToGradeList[i][1], 'r', encoding="utf8") as file:
+            commitinfo = file.read()
+        #get the number of contributors
+        #Formatting = "msg": "UI vision refactor (#2115)\n\n* refactor vision\r\n\r\n* don't show slow frame message when in preview mode\r\n\r\n* change draws to uint32_t\r\n\r\n* set vision_seen=false after destroy\r\n\r\n* remove vision_connect_thread\r\n\r\n* refactor ui_update\r\n\r\n* seelp 30ms when vision is not connected\r\n\r\n* remove should_swap\r\n\r\n* call ui_update_sizes before ui_draw\r\n\r\n* rebase\r\n\r\n* start bigger UI refactor\r\n\r\n* don't need the touch fd\r\n\r\n* fix qt build\r\n\r\n* more cleanup\r\n\r\n* more responsive\r\n\r\n* more refactor\r\n\r\n* fix for pc\r\n\r\n* poll for frames\r\n\r\n* lower CPU usage\r\n\r\n* cleanup\r\n\r\n* no more zmq\r\n\r\n* undo that\r\n\r\n* cleanup speed limit\r\n\r\n* fix sidebar severity for athena status\r\n\r\n* not aarch64\r\n\r\nCo-authored-by: deanlee <deanlee3@gmail.com>\r\nCo-authored-by: Comma Device <device@comma.ai>\r\nCo-authored-by: Willem Melching <willem.melching@gmail.com>"
+        try:
+            authors = []
+            authors.append(commitinfo["author_email"])
+            if (commitinfo.find('Co-authored-by:') != -1):
+                for author in commitinfo.split('Co-authored-by:')[1:]:
+                    authors.append(author.split('<')[1].split('>')[0])
+        except:
+            print ("Formattiing Order for Authors!")
+
+        commitMSG = commitinfo["msg"]
+        keyWordAdjustment = 0
+        prevCommitAdjustment = 0
+        #check the commit message for the words in positiveKeyWords
+        for word in positiveKeyWords:
+            if (commitMSG.find(word) != -1):
+                keyWordAdjustment = keyWordAdjustment + positiveKeyWordsValue
+        
+        #check the commit message for the words in positiveKeyWordsBigImpact
+        for word in positiveKeyWordsBigImpact:
+            if (commitMSG.find(word) != -1):
+                keyWordAdjustment = keyWordAdjustment + positiveKeyWordsBigImpactValue
+
+        #check the commit message for the words in negitiveKeyWords
+        for word in negitiveKeyWords:
+            if (commitMSG.find(word) != -1):
+                keyWordAdjustment = keyWordAdjustment + negitiveKeyWordsValue
+
+        #check the commit message for the words in prevCommitScoreAdjustmentNegitiveKeyWords
+        for word in prevCommitScoreAdjustmentNegitiveKeyWords:
+            if (commitMSG.find(word) != -1):
+                prevCommitAdjustment = prevCommitAdjustment + prevCommitScoreAdjustmentNegitiveKeyWordsValue
+        #Impliment this later
+        #if (prevCommitAdjustment != 0):
+            #dataSet1['grade'].last = dataSet1['grade'].last + prevCommitAdjustment
+
+        topBaseScoreAddition = 50
+        topContributorScoreAddition = 15
+        topKeyWordScoreAddition = 15
+        topCommitNumbScoreAddition = 20
+
+        if (keyWordAdjustment > 5):
+            KeyWordAdjustment = 5
+        if (keyWordAdjustment < -5):
+            KeyWordAdjustment = -5
+
+        if (contributorscount > 3):
+            contributorscount = 3
+
+        finalKeywordScore = (keyWordAdjustment/5)*topKeyWordScoreAddition
+        finalContributorScore = ((len(authors)/3)*topContributorScoreAddition)
+        finalCommitScore = (topCommitNumbScoreAddition * (j / numberOfCommits))
+
+        if(repoBaseScore > topBaseScoreAddition):
+            repoBaseScore = topBaseScoreAddition
+
+
+        commitGrade = np.clip(repoBaseScore + finalKeywordScore + finalContributorScore + finalCommitScore, 0,100)
+        if (commitGrade == 55):
+            print(repoBaseScore)
+            print(finalKeywordScore)
+            print(finalContributorScore)
+            print(finalCommitScore)
+        dataSet1temp = pd.DataFrame({'data': [commitdata], 'grade': [commitGrade]})
+
+
+    """
     for filesToGrade in range(len(filesToGradeList)):
         print(filesToGrade)
         #get the number of contributors
-        #error checking
-        try:
-            contributors = commitinfo.split('author\':')[1]
-            contributors = contributors.split('\'date\':')[0]
-            contributorscount = contributors.count("<")
-        except:
-            break
-            print("error file = " + i+str(j)+".json")
+        #TODO
 
         if (commitdata == ''):
             break
@@ -138,7 +209,7 @@ def commitFolderGrading (filesToGradeList):
         for word in prevCommitScoreAdjustmentNegitiveKeyWords:
             if (commitmessage.find(word) != -1):
                 prevCommitAdjustment = prevCommitAdjustment + prevCommitScoreAdjustmentNegitiveKeyWordsValue
-        """Impliment this later"""
+        Impliment this later
         #if (prevCommitAdjustment != 0):
             #dataSet1['grade'].last = dataSet1['grade'].last + prevCommitAdjustment
 
@@ -164,11 +235,11 @@ def commitFolderGrading (filesToGradeList):
 
 
         commitGrade = np.clip(repoBaseScore + finalKeywordScore + finalContributorScore + finalCommitScore, 0,100)
-        """if (commitGrade == 55):
+        if (commitGrade == 55):
             print(repoBaseScore)
             print(finalKeywordScore)
             print(finalContributorScore)
-            print(finalCommitScore)"""
+            print(finalCommitScore)
         dataSet1temp = pd.DataFrame({'data': [commitdata], 'grade': [commitGrade]})
         if (addRepoToData):
             dataSet1temp['repo'] = i.split('parsed')[0]
@@ -196,8 +267,7 @@ def commitFolderGrading (filesToGradeList):
                         print("shouldn't show up")
 
                     #print (requests.get('https://api.github.com/search/users?q='+author).json()['items'][0]['login'])
-
-
+"""
 
 def main():
     global inputFolder, outputFolder
