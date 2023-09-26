@@ -160,10 +160,9 @@ def commitFolderGrading (filesToGradeList, repoBaseScore):
             repoBaseScore = topBaseScoreAddition
 
 
-        commitGrade.append(np.clip(repoBaseScore + finalKeywordScore + finalContributorScore + finalCommitScore, 0,100))
+        commitGrade.append(np.clip(repoBaseScore + finalKeywordScore + finalContributorScore + finalCommitScore, 0,100), filesToGradeList[i][1])
     return (commitGrade)
-        #return(commitGrade)
-        #dataSet1temp = pd.DataFrame({'data': [commitdata], 'grade': [commitGrade]})
+        
 
 
     """
@@ -267,28 +266,13 @@ def main():
     inputFolder = args.input
     outputFolder = args.output
 
-    #testing bits
-    
-    if (False):
-        TestRepoData = """{"id": 3584343, "name": "davebshow/goblin", "isFork": false, "commits": 363, "branches": 31, "defaultBranch": "master", "releases": 0, "contributors": 8, "license": "Other", "watchers": 13, "stargazers": 90, "forks": 21, "size": 487, "createdAt": "2016-07-01 05:59:12", "pushedAt": "2018-11-06 01:10:31", "updatedAt": "2020-12-04 09:55:15", "homepage": "", "mainLanguage": "Python", "totalIssues": 64, "openIssues": 15, "totalPullRequests": 48, "openPullRequests": 2, "lastCommit": "2018-08-29 04:16:23", "lastCommitSHA": "ab6966eafd4a5de9d60a1d88f2054f5104dba241", "hasWiki": true, "isArchived": false, "languages": {}, "labels": []}"""
-        TestRepoData = json.loads(TestRepoData)
-        print (baseRepositoryGrading(TestRepoData))
-
-        TestingCommitData = """{"hash": "6c2b7882ce681cc1fb22f33d699e661b573ac397", "author": "Jiri Kuncar", "author_email": "jiri.kuncar@gmail.com", "author_date": "2017-10-30 12:38:23+01:00", "committer": "Jiri Kuncar", "committer_email": "jiri.kuncar@gmail.com", "committer_date": "2017-11-08 13:59:35+01:00", "msg": "global: cleaned code style and doctests", "merge": "False", "parents": "['ddd5444dca200f2b96dbd3c572da1360435d75af']", "author_timezone": "-3600", "committer_timezone": "-3600", "branches": "{'master'}", "in_main_branch": "True"}"""
-        TestingCommitData = json.loads(TestingCommitData)
-        TestingCommitData2 = """{"hash": "848301b091af11e129ba6873f7d297d4890c562b", "author": "Adeeb Shihadeh", "author_email": "adeebshihadeh@gmail.com", "author_date": "2020-09-03 16:32:55-07:00", "committer": "GitHub", "committer_email": "noreply@github.com", "committer_date": "2020-09-03 16:32:55-07:00", "msg": "UI vision refactor (#2115)\n\n* refactor vision\r\n\r\n* don't show slow frame message when in preview mode\r\n\r\n* change draws to uint32_t\r\n\r\n* set vision_seen=false after destroy\r\n\r\n* remove vision_connect_thread\r\n\r\n* refactor ui_update\r\n\r\n* seelp 30ms when vision is not connected\r\n\r\n* remove should_swap\r\n\r\n* call ui_update_sizes before ui_draw\r\n\r\n* rebase\r\n\r\n* start bigger UI refactor\r\n\r\n* don't need the touch fd\r\n\r\n* fix qt build\r\n\r\n* more cleanup\r\n\r\n* more responsive\r\n\r\n* more refactor\r\n\r\n* fix for pc\r\n\r\n* poll for frames\r\n\r\n* lower CPU usage\r\n\r\n* cleanup\r\n\r\n* no more zmq\r\n\r\n* undo that\r\n\r\n* cleanup speed limit\r\n\r\n* fix sidebar severity for athena status\r\n\r\n* not aarch64\r\n\r\nCo-authored-by: deanlee <deanlee3@gmail.com>\r\nCo-authored-by: Comma Device <device@comma.ai>\r\nCo-authored-by: Willem Melching <willem.melching@gmail.com>", "merge": "False", "parents": "['8880ec81f258b06cda134f59a7e96d7e542b9a69']", "author_timezone": "25200", "committer_timezone": "25200", "branches": "{'master'}", "in_main_branch": "True"}"""
-        TestingCommitData2 = json.loads(TestingCommitData2.replace('\r', '').replace('\n', '').replace('\t', ''))
-        
-        TestingDataList = [TestingCommitData, TestingCommitData2]
-        print (commitFolderGrading(TestingDataList,40))
-
+    commitGrades = 
     filesToProcess = getFiles(getSubFolders(inputFolder))
     for repository in filesToProcess:
         repoGrade = baseRepositoryGrading(json.loads(getGitInfo(repository[1]).split("\n")[0]))
         for foldersToGrade in repository[0]:
                 commitFolderGrading(getFilesToGradeFromRevisionFolder(repository[1]+foldersToGrade),repoGrade)
-                exit()
-        
+  
 
 
     
