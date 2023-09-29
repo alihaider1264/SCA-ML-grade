@@ -19,7 +19,7 @@ import atexit
 #NEW FEATURES
     #Easier to manage
 
-
+CLEANUPOLDEDIT=True
 isBatchJson = False #To Impliment
 repoLocation = []
 outputLocation = ""
@@ -66,6 +66,7 @@ def processRepo(repo, repoInfo : json):
             else:
                 #delete old files
                 process1 = subprocess.run("rmdir "+ basePath + " /s /q", shell=True)
+    if CLEANUPOLDEDIT: return
     try:   
         repoClass = Repository(repo , only_modifications_with_file_types=['.py'],clone_repo_to = gitOutputFolder)
         for commit in repoClass.traverse_commits():
@@ -173,7 +174,6 @@ def main():
 
     isBatchJson = args.repo.endswith(".json")
     outputLocation = args.output
-    multibranch = args.branch
     submodules = args.submodules
     defJSON = args.defJSON
     language = args.language
