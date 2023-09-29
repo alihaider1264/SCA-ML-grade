@@ -36,9 +36,6 @@ def searchFileName(path, fileName):
     filesToDo = []
     for root, dirs, files in os.walk(path):
         for file in files:
-            print (file)
-
-            if str(file) == str(fileName):
-                #code to generate a list of paths of files to generate logs for
-                filesToDo.append(os.path.join(root, file).split(path)[1])
+            if file == fileName:
+                    filesToDo.append(os.path.join(root, file).split(path)[1])
     return filesToDo
