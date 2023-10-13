@@ -7,6 +7,10 @@ import datetime
 import datetime
 import numpy as np
 import json
+import threading as th
+import time
+import sys
+
 
 #commit comment keywords for code grade adjustment
 positiveKeyWords = ['fix', 'resolve', 'resolve', 'resolved', 'resolves', 'resolving', 'close', 'closed', 'closes', 'closing', 'fixes', 'fixed', 'fixing', 'patch', 'patched', 'patching', 'update', 'updated', 'updating', 'upgrade', 'upgraded', 'upgrading', 'improve', 'improved', 'improving', 'improvement', 'improvements', 'improves', 'improving', 'enhance', 'enhanced', 'enhances', 'enhancing', 'enhancement', 'enhancements']
@@ -15,6 +19,8 @@ positiveKeyWordsValue = 1
 positiveKeyWordsBigImpactValue = 5
 negitiveKeyWords = ['todo','tofix','bugged','fix me','fix-me']
 negitiveKeyWordsValue = -1
+
+threads = 1000
 
 prevCommitScoreAdjustmentNegitiveKeyWords = ['revert','reverted','reverting','reverts']
 prevCommitScoreAdjustmentNegitiveKeyWordsValue = -10
@@ -47,7 +53,10 @@ def getFilesToGradeFromRevisionFolder(FolderPath, codeExtension = ".py", jsonExt
     #List the files in a directory
     filesToGradeList = []
     deletedFile = False
-    allFiles = os.listdir(FolderPath)
+    try:
+        allFiles = os.listdir(FolderPath)
+    except:
+        return filesToGradeList
     fileCount = len(allFiles)
     #check to see if it's odd
     if len(allFiles) % 2 != 0:
@@ -102,15 +111,24 @@ def commitFolderGrading (filesToGradeList, repoBaseScore):
     for i in range(len(filesToGradeList)):
         #get files
         commitinfo = ''
-        with open(filesToGradeList[i][1], 'r', encoding="utf8") as file:
-            commitinfo = json.loads(file.read())
+        currentJSONFilePath = filesToGradeList[i][1]
+        if (currentJSONFilePath == "DELETED"):
+            continue
+        try:
+            with open(filesToGradeList[i][1], 'r', encoding="utf8") as file:
+                commitinfo = json.loads(file.read())
+        except:
+            continue
 
         #get the number of contributors
         #Formatting = "msg": "UI vision refactor (#2115)\n\n* refactor vision\r\n\r\n* don't show slow frame message when in preview mode\r\n\r\n* change draws to uint32_t\r\n\r\n* set vision_seen=false after destroy\r\n\r\n* remove vision_connect_thread\r\n\r\n* refactor ui_update\r\n\r\n* seelp 30ms when vision is not connected\r\n\r\n* remove should_swap\r\n\r\n* call ui_update_sizes before ui_draw\r\n\r\n* rebase\r\n\r\n* start bigger UI refactor\r\n\r\n* don't need the touch fd\r\n\r\n* fix qt build\r\n\r\n* more cleanup\r\n\r\n* more responsive\r\n\r\n* more refactor\r\n\r\n* fix for pc\r\n\r\n* poll for frames\r\n\r\n* lower CPU usage\r\n\r\n* cleanup\r\n\r\n* no more zmq\r\n\r\n* undo that\r\n\r\n* cleanup speed limit\r\n\r\n* fix sidebar severity for athena status\r\n\r\n* not aarch64\r\n\r\nCo-authored-by: deanlee <deanlee3@gmail.com>\r\nCo-authored-by: Comma Device <device@comma.ai>\r\nCo-authored-by: Willem Melching <willem.melching@gmail.com>"
         authors= [commitinfo["author_email"]]
-        if (commitinfo["msg"].find('Co-authored-by') != -1):
-            for author in commitinfo["msg"].split('Co-authored-by')[1:]:
-                authors.append(author.split('<')[1].split('>')[0])
+        try:
+            if (commitinfo["msg"].find('Co-authored-by') != -1):
+                for author in commitinfo["msg"].split('Co-authored-by')[1:]:
+                    authors.append(author.split('<')[1].split('>')[0])
+        except:
+            pass
         commitMSG = commitinfo["msg"]
         keyWordAdjustment = 0
         prevCommitAdjustment = 0
@@ -182,8 +200,16 @@ def main():
     for i in range(len(foldersToProcess)):
         repositoryGrade = baseRepositoryGrading(json.loads(getGitInfo(os.path.join(inputFolder,foldersToProcess[i])).split("\n")[0]))
         repositoryFiles = filesToProcess[i]
+        #print progress bar 
+        print (mcall.printProgressBar(i, len(foldersToProcess), "Processing Files"))
         for j in range(len(repositoryFiles)):
-            commitFolderGrading(getFilesToGradeFromRevisionFolder(os.path.join(inputFolder, foldersToProcess[i])+repositoryFiles[j]), repositoryGrade)
+            if (threads != 0):
+                while (len(th.enumerate()) > threads):
+                    #sleep for a second
+                    time.sleep(1)
+            #multithread this
+            thread = th.Thread(target=commitGrades.append, args=(commitFolderGrading(getFilesToGradeFromRevisionFolder(os.path.join(inputFolder, foldersToProcess[i])+repositoryFiles[j]), repositoryGrade),))
+            thread.start()
     
     length = 0
     for commits in commitGrades:
