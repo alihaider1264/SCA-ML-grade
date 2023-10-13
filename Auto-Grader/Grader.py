@@ -218,6 +218,9 @@ def main():
     #check for output folder
     if (outputFolder != None):
         #write the output to a file in a 
+        #create the output folder
+        if not os.path.exists(outputFolder):
+            os.makedirs(outputFolder)
         df.to_pickle(os.path.join(outputFolder,"grades.pkl"))
         
     else :
