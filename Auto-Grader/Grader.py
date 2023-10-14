@@ -7,6 +7,10 @@ import datetime
 import datetime
 import numpy as np
 import json
+import threading as th
+import time
+import sys
+
 
 #commit comment keywords for code grade adjustment
 positiveKeyWords = ['fix', 'resolve', 'resolve', 'resolved', 'resolves', 'resolving', 'close', 'closed', 'closes', 'closing', 'fixes', 'fixed', 'fixing', 'patch', 'patched', 'patching', 'update', 'updated', 'updating', 'upgrade', 'upgraded', 'upgrading', 'improve', 'improved', 'improving', 'improvement', 'improvements', 'improves', 'improving', 'enhance', 'enhanced', 'enhances', 'enhancing', 'enhancement', 'enhancements']
@@ -16,22 +20,23 @@ positiveKeyWordsBigImpactValue = 5
 negitiveKeyWords = ['todo','tofix','bugged','fix me','fix-me']
 negitiveKeyWordsValue = -1
 
+threads = 1000
+
 prevCommitScoreAdjustmentNegitiveKeyWords = ['revert','reverted','reverting','reverts']
 prevCommitScoreAdjustmentNegitiveKeyWordsValue = -10
-
+df = pd.DataFrame(columns=['fileGrade', 'Path'])
 
 inputFolder,outputFolder = "",""
 parser = argparse.ArgumentParser(description='Input a Grade Downloader folder, and this will generate grades for each file')
 parser.add_argument('-i', '--input', help='The input folder', required=True)
 parser.add_argument('-o', '--output', help='The output folder', required=False)
 def getSubFolders(path):
-    return [name for name in os.listdir(path) if os.path.isdir(os.path.join(path, name))and name != 'git']
+    return([name for name in os.listdir(inputFolder) if os.path.isdir(os.path.join(inputFolder, name)) and name != "git"])
 
 def getFiles(foldersToProcess):
-    global inputFolder
     filesToIndex = []
     for folder in foldersToProcess:
-        filesToIndex.append([mcall.searchFileName(inputFolder + folder, "0.py"), os.path.join(inputFolder, folder)])
+        filesToIndex.append(mcall.searchFileName(os.path.join(inputFolder,folder), "0.py"))
     return filesToIndex
 
 def getGitInfo(gitInfoPath):
@@ -48,7 +53,10 @@ def getFilesToGradeFromRevisionFolder(FolderPath, codeExtension = ".py", jsonExt
     #List the files in a directory
     filesToGradeList = []
     deletedFile = False
-    allFiles = os.listdir(FolderPath)
+    try:
+        allFiles = os.listdir(FolderPath)
+    except:
+        return filesToGradeList
     fileCount = len(allFiles)
     #check to see if it's odd
     if len(allFiles) % 2 != 0:
@@ -96,22 +104,31 @@ def baseRepositoryGrading(repoInfo):
     return repoBaseScore
     
 def commitFolderGrading (filesToGradeList, repoBaseScore):
+    global df
     #filesToGradeList is formatted as [code path, json path]
     numberOfCommits = len(filesToGradeList)
     commitGrade = []
     for i in range(len(filesToGradeList)):
         #get files
         commitinfo = ''
-        print(filesToGradeList)
-        with open(filesToGradeList[i][1], 'r', encoding="utf8") as file:
-            commitinfo = file.read()
+        currentJSONFilePath = filesToGradeList[i][1]
+        if (currentJSONFilePath == "DELETED"):
+            continue
+        try:
+            with open(filesToGradeList[i][1], 'r', encoding="utf8") as file:
+                commitinfo = json.loads(file.read())
+        except:
+            continue
 
         #get the number of contributors
         #Formatting = "msg": "UI vision refactor (#2115)\n\n* refactor vision\r\n\r\n* don't show slow frame message when in preview mode\r\n\r\n* change draws to uint32_t\r\n\r\n* set vision_seen=false after destroy\r\n\r\n* remove vision_connect_thread\r\n\r\n* refactor ui_update\r\n\r\n* seelp 30ms when vision is not connected\r\n\r\n* remove should_swap\r\n\r\n* call ui_update_sizes before ui_draw\r\n\r\n* rebase\r\n\r\n* start bigger UI refactor\r\n\r\n* don't need the touch fd\r\n\r\n* fix qt build\r\n\r\n* more cleanup\r\n\r\n* more responsive\r\n\r\n* more refactor\r\n\r\n* fix for pc\r\n\r\n* poll for frames\r\n\r\n* lower CPU usage\r\n\r\n* cleanup\r\n\r\n* no more zmq\r\n\r\n* undo that\r\n\r\n* cleanup speed limit\r\n\r\n* fix sidebar severity for athena status\r\n\r\n* not aarch64\r\n\r\nCo-authored-by: deanlee <deanlee3@gmail.com>\r\nCo-authored-by: Comma Device <device@comma.ai>\r\nCo-authored-by: Willem Melching <willem.melching@gmail.com>"
         authors= [commitinfo["author_email"]]
-        if (commitinfo["msg"].find('Co-authored-by') != -1):
-            for author in commitinfo["msg"].split('Co-authored-by')[1:]:
-                authors.append(author.split('<')[1].split('>')[0])
+        try:
+            if (commitinfo["msg"].find('Co-authored-by') != -1):
+                for author in commitinfo["msg"].split('Co-authored-by')[1:]:
+                    authors.append(author.split('<')[1].split('>')[0])
+        except:
+            pass
         commitMSG = commitinfo["msg"]
         keyWordAdjustment = 0
         prevCommitAdjustment = 0
@@ -159,107 +176,15 @@ def commitFolderGrading (filesToGradeList, repoBaseScore):
         if(repoBaseScore > topBaseScoreAddition):
             repoBaseScore = topBaseScoreAddition
 
-
-        commitGrade.append(np.clip(repoBaseScore + finalKeywordScore + finalContributorScore + finalCommitScore, 0,100))
+        finalGrade = np.clip(repoBaseScore + finalKeywordScore + finalContributorScore + finalCommitScore, 0,100)
+        finalPath = filesToGradeList[i][0].split(inputFolder)[1]
+        df = pd.concat([df, pd.DataFrame([[finalGrade, finalPath]], columns=['fileGrade', 'Path'])])
+        commitGrade.append([finalGrade, finalPath])
     return (commitGrade)
-        #return(commitGrade)
-        #dataSet1temp = pd.DataFrame({'data': [commitdata], 'grade': [commitGrade]})
-
-
-    """
-    for filesToGrade in range(len(filesToGradeList)):
-        print(filesToGrade)
-        #get the number of contributors
-        #TODO
-
-        if (commitdata == ''):
-            break
-        contributorScore = contributorscount -1
-
-        #find KeyWords in the commit message
-        commitmessage = commitinfo.split('\'summary\':')[1]
-        commitmessage = commitmessage.replace(', \'description\':', ' ')
-
-        keyWordAdjustment = 0
-        prevCommitAdjustment = 0
-        #check the commit message for the words in positiveKeyWords
-        for word in positiveKeyWords:
-            if (commitmessage.find(word) != -1):
-                keyWordAdjustment = keyWordAdjustment + positiveKeyWordsValue
-        
-        #check the commit message for the words in positiveKeyWordsBigImpact
-        for word in positiveKeyWordsBigImpact:
-            if (commitmessage.find(word) != -1):
-                keyWordAdjustment = keyWordAdjustment + positiveKeyWordsBigImpactValue
-
-        #check the commit message for the words in negitiveKeyWords
-        for word in negitiveKeyWords:
-            if (commitmessage.find(word) != -1):
-                keyWordAdjustment = keyWordAdjustment + negitiveKeyWordsValue
-
-        #check the commit message for the words in prevCommitScoreAdjustmentNegitiveKeyWords
-        for word in prevCommitScoreAdjustmentNegitiveKeyWords:
-            if (commitmessage.find(word) != -1):
-                prevCommitAdjustment = prevCommitAdjustment + prevCommitScoreAdjustmentNegitiveKeyWordsValue
-        Impliment this later
-        #if (prevCommitAdjustment != 0):
-            #dataSet1['grade'].last = dataSet1['grade'].last + prevCommitAdjustment
-
-        topBaseScoreAddition = 50
-        topContributorScoreAddition = 15
-        topKeyWordScoreAddition = 15
-        topCommitNumbScoreAddition = 20
-
-        if (keyWordAdjustment > 5):
-            KeyWordAdjustment = 5
-        if (keyWordAdjustment < -5):
-            KeyWordAdjustment = -5
-
-        if (contributorscount > 3):
-            contributorscount = 3
-
-        finalKeywordScore = (keyWordAdjustment/5)*topKeyWordScoreAddition
-        finalContributorScore = ((contributorScore/3)*topContributorScoreAddition)
-        finalCommitScore = (topCommitNumbScoreAddition * (j / numberOfCommits))
-
-        if(repoBaseScore > topBaseScoreAddition):
-            repoBaseScore = topBaseScoreAddition
-
-
-        commitGrade = np.clip(repoBaseScore + finalKeywordScore + finalContributorScore + finalCommitScore, 0,100)
-        if (commitGrade == 55):
-            print(repoBaseScore)
-            print(finalKeywordScore)
-            print(finalContributorScore)
-            print(finalCommitScore)
-        dataSet1temp = pd.DataFrame({'data': [commitdata], 'grade': [commitGrade]})
-        if (addRepoToData):
-            dataSet1temp['repo'] = i.split('parsed')[0]
-        dataSet1 = pd.concat([dataSet1, dataSet1temp], ignore_index=True)
-
         
 
-        #calculate Grade
-        #create a minimum grade based off of stats from the github repo
 
-        #get the authors info if using the GITHUB API. Maybe make into a seperate application that can then be used to generate a json file used here due to the rate limit of the API
-        if (useGITAPI == True):
-            authorsArray = contributors.split('>')
-            for author in authorsArray:
-                if (author.find('<') != -1):
-                    authorsEmail.append(author[author.find('<')+1:])
-            #use https://api.github.com/search/users?q= to get a username from an email address
-            for author in authorsEmail:
-                print(authorsEmailCache)
-                if (author.find('@') != -1 and not (author in authorsEmailCache)):
-                    print (author + 'test')
-                    gitRequest = requests.get('https://api.github.com/search/users?q='+author).json()
-                    if (gitRequest['total_count'] > 0):
-                        authors.append(gitRequest['items'][0]['login'])
-                        print("shouldn't show up")
-
-                    #print (requests.get('https://api.github.com/search/users?q='+author).json()['items'][0]['login'])
-"""
+    
 
 def main():
     global inputFolder, outputFolder
@@ -267,30 +192,40 @@ def main():
     inputFolder = args.input
     outputFolder = args.output
 
-    #testing bits
+    commitGrades = []
+    foldersToProcess = getSubFolders(inputFolder)
+
+    filesToProcess = getFiles(foldersToProcess)
     
-    if (False):
-        TestRepoData = """{"id": 3584343, "name": "davebshow/goblin", "isFork": false, "commits": 363, "branches": 31, "defaultBranch": "master", "releases": 0, "contributors": 8, "license": "Other", "watchers": 13, "stargazers": 90, "forks": 21, "size": 487, "createdAt": "2016-07-01 05:59:12", "pushedAt": "2018-11-06 01:10:31", "updatedAt": "2020-12-04 09:55:15", "homepage": "", "mainLanguage": "Python", "totalIssues": 64, "openIssues": 15, "totalPullRequests": 48, "openPullRequests": 2, "lastCommit": "2018-08-29 04:16:23", "lastCommitSHA": "ab6966eafd4a5de9d60a1d88f2054f5104dba241", "hasWiki": true, "isArchived": false, "languages": {}, "labels": []}"""
-        TestRepoData = json.loads(TestRepoData)
-        print (baseRepositoryGrading(TestRepoData))
+    for i in range(len(foldersToProcess)):
+        repositoryGrade = baseRepositoryGrading(json.loads(getGitInfo(os.path.join(inputFolder,foldersToProcess[i])).split("\n")[0]))
+        repositoryFiles = filesToProcess[i]
+        #print progress bar 
+        print (mcall.printProgressBar(i, len(foldersToProcess), "Processing Files"))
+        for j in range(len(repositoryFiles)):
+            if (threads != 0):
+                while (len(th.enumerate()) > threads):
+                    #sleep for a second
+                    time.sleep(1)
+            #multithread this
+            thread = th.Thread(target=commitGrades.append, args=(commitFolderGrading(getFilesToGradeFromRevisionFolder(os.path.join(inputFolder, foldersToProcess[i])+repositoryFiles[j]), repositoryGrade),))
+            thread.start()
+    
+    length = 0
+    for commits in commitGrades:
+        length = length + len(commits)
 
-        TestingCommitData = """{"hash": "6c2b7882ce681cc1fb22f33d699e661b573ac397", "author": "Jiri Kuncar", "author_email": "jiri.kuncar@gmail.com", "author_date": "2017-10-30 12:38:23+01:00", "committer": "Jiri Kuncar", "committer_email": "jiri.kuncar@gmail.com", "committer_date": "2017-11-08 13:59:35+01:00", "msg": "global: cleaned code style and doctests", "merge": "False", "parents": "['ddd5444dca200f2b96dbd3c572da1360435d75af']", "author_timezone": "-3600", "committer_timezone": "-3600", "branches": "{'master'}", "in_main_branch": "True"}"""
-        TestingCommitData = json.loads(TestingCommitData)
-        TestingCommitData2 = """{"hash": "848301b091af11e129ba6873f7d297d4890c562b", "author": "Adeeb Shihadeh", "author_email": "adeebshihadeh@gmail.com", "author_date": "2020-09-03 16:32:55-07:00", "committer": "GitHub", "committer_email": "noreply@github.com", "committer_date": "2020-09-03 16:32:55-07:00", "msg": "UI vision refactor (#2115)\n\n* refactor vision\r\n\r\n* don't show slow frame message when in preview mode\r\n\r\n* change draws to uint32_t\r\n\r\n* set vision_seen=false after destroy\r\n\r\n* remove vision_connect_thread\r\n\r\n* refactor ui_update\r\n\r\n* seelp 30ms when vision is not connected\r\n\r\n* remove should_swap\r\n\r\n* call ui_update_sizes before ui_draw\r\n\r\n* rebase\r\n\r\n* start bigger UI refactor\r\n\r\n* don't need the touch fd\r\n\r\n* fix qt build\r\n\r\n* more cleanup\r\n\r\n* more responsive\r\n\r\n* more refactor\r\n\r\n* fix for pc\r\n\r\n* poll for frames\r\n\r\n* lower CPU usage\r\n\r\n* cleanup\r\n\r\n* no more zmq\r\n\r\n* undo that\r\n\r\n* cleanup speed limit\r\n\r\n* fix sidebar severity for athena status\r\n\r\n* not aarch64\r\n\r\nCo-authored-by: deanlee <deanlee3@gmail.com>\r\nCo-authored-by: Comma Device <device@comma.ai>\r\nCo-authored-by: Willem Melching <willem.melching@gmail.com>", "merge": "False", "parents": "['8880ec81f258b06cda134f59a7e96d7e542b9a69']", "author_timezone": "25200", "committer_timezone": "25200", "branches": "{'master'}", "in_main_branch": "True"}"""
-        TestingCommitData2 = json.loads(TestingCommitData2.replace('\r', '').replace('\n', '').replace('\t', ''))
+    #check for output folder
+    if (outputFolder != None):
+        #write the output to a file in a 
+        #create the output folder
+        if not os.path.exists(outputFolder):
+            os.makedirs(outputFolder)
+        df.to_pickle(os.path.join(outputFolder,"grades.pkl"))
         
-        TestingDataList = [TestingCommitData, TestingCommitData2]
-        print (commitFolderGrading(TestingDataList,40))
-
-    filesToProcess = getFiles(getSubFolders(inputFolder))
-    for repository in filesToProcess:
-        repoGrade = baseRepositoryGrading(json.loads(getGitInfo(repository[1]).split("\n")[0]))
-        for foldersToGrade in repository[0]:
-                commitFolderGrading(getFilesToGradeFromRevisionFolder(repository[1]+foldersToGrade),repoGrade)
-                exit()
-        
-
-
+    else :
+        print (length)
+        print (df)
     
 main()
 
