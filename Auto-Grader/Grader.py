@@ -20,7 +20,7 @@ positiveKeyWordsBigImpactValue = 5
 negitiveKeyWords = ['todo','tofix','bugged','fix me','fix-me']
 negitiveKeyWordsValue = -1
 
-threads = 1000
+threads = 16
 
 prevCommitScoreAdjustmentNegitiveKeyWords = ['revert','reverted','reverting','reverts']
 prevCommitScoreAdjustmentNegitiveKeyWordsValue = -10
@@ -191,6 +191,8 @@ def main():
     args = parser.parse_args()
     inputFolder = args.input
     outputFolder = args.output
+    #get time
+    startTime = time.time()
 
     commitGrades = []
     foldersToProcess = getSubFolders(inputFolder)
@@ -226,7 +228,9 @@ def main():
     else :
         print (length)
         print (df)
-    
+    #get time
+    endTime = time.time()
+    print ("Time Taken: " + str(endTime - startTime))
 main()
 
 #Get Subfolders and return as a list
