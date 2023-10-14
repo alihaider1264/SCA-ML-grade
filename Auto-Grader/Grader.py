@@ -64,7 +64,6 @@ def getFilesToGradeFromRevisionFolder(FolderPath, codeExtension=".py", jsonExten
             filesToGradeList.sort(key=lambda x: int(os.path.basename(x[0]).split(".")[0]))
     except:
         return filesToGradeList
-    print (filesToGradeList)
     fileCount = len(filesToGradeList)
     # check to see if it's odd
     if fileCount % 2 != 0:
