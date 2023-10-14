@@ -68,12 +68,10 @@ def getFilesToGradeFromRevisionFolder(FolderPath, codeExtension=".py", jsonExten
     fileCount = len(filesToGradeList)
     # check to see if it's odd
     if fileCount % 2 != 0:
-        fileCount = fileCount - 1
         deletedFile = True
-    fileCount = int(fileCount / 2)
     if deletedFile:
         filesToGradeList.append(["DELETED", "DELETED"])
-    return filesToGradeList[:fileCount]
+    return filesToGradeList
 
 def baseRepositoryGrading(repoInfo):
     #Example {"id": 3584343, "name": "davebshow/goblin", "isFork": false, "commits": 363, "branches": 31, "defaultBranch": "master", "releases": 0, "contributors": 8, "license": "Other", "watchers": 13, "stargazers": 90, "forks": 21, "size": 487, "createdAt": "2016-07-01 05:59:12", "pushedAt": "2018-11-06 01:10:31", "updatedAt": "2020-12-04 09:55:15", "homepage": "", "mainLanguage": "Python", "totalIssues": 64, "openIssues": 15, "totalPullRequests": 48, "openPullRequests": 2, "lastCommit": "2018-08-29 04:16:23", "lastCommitSHA": "ab6966eafd4a5de9d60a1d88f2054f5104dba241", "hasWiki": true, "isArchived": false, "languages": {}, "labels": []}
