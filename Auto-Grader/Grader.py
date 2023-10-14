@@ -60,14 +60,15 @@ def getFilesToGradeFromRevisionFolder(FolderPath, codeExtension=".py", jsonExten
                     json_file = os.path.join(FolderPath, entry.name.replace(codeExtension, jsonExtension))
                     if os.path.exists(json_file):
                         filesToGradeList.append([entry.path, json_file])
+                    else:
+                        if entry.name == "DELETED.py":
+                            deletedFile = True
             # sort the files in numerical order
             filesToGradeList.sort(key=lambda x: int(os.path.basename(x[0]).split(".")[0]))
     except:
         return filesToGradeList
     fileCount = len(filesToGradeList)
     # check to see if it's odd
-    if fileCount % 2 != 0:
-        deletedFile = True
     if deletedFile:
         filesToGradeList.append(["DELETED", "DELETED"])
     return filesToGradeList
