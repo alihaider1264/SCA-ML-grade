@@ -188,6 +188,8 @@ def main():
     args = parser.parse_args()
     inputFolder = args.input
     outputFolder = args.output
+    #get time
+    startTime = time.time()
 
     #start time
     startTime = time.time()
