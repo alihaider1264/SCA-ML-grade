@@ -12,7 +12,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             //include launch arguments
-            "args": ["-i","~/DataSet/MiniTestingDataset"]
+            "args": ["-i","~/SPDataset/smallDataset/S2DS245-1014/"],
         }
     ]
 }

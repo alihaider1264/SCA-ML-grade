@@ -19,10 +19,11 @@ positiveKeyWordsValue = 1
 positiveKeyWordsBigImpactValue = 5
 negitiveKeyWords = ['todo','tofix','bugged','fix me','fix-me']
 negitiveKeyWordsValue = -1
+negitiveKeywordImpact = 0
 
 threads = 16
 
-prevCommitScoreAdjustmentNegitiveKeyWords = ['revert','reverted','reverting','reverts']
+prevCommitScoreAdjustmentNegitiveKeyWords = ['revert','reverted','reverting','reverts', 'undo', 'undid', 'undone', 'undoing']
 prevCommitScoreAdjustmentNegitiveKeyWordsValue = -10
 df = pd.DataFrame(columns=['fileGrade', 'Path'])
 
@@ -74,6 +75,7 @@ def getFilesToGradeFromRevisionFolder(FolderPath, codeExtension=".py", jsonExten
     return filesToGradeList
 
 def baseRepositoryGrading(repoInfo):
+    global negitiveKeywordImpact
     #Example {"id": 3584343, "name": "davebshow/goblin", "isFork": false, "commits": 363, "branches": 31, "defaultBranch": "master", "releases": 0, "contributors": 8, "license": "Other", "watchers": 13, "stargazers": 90, "forks": 21, "size": 487, "createdAt": "2016-07-01 05:59:12", "pushedAt": "2018-11-06 01:10:31", "updatedAt": "2020-12-04 09:55:15", "homepage": "", "mainLanguage": "Python", "totalIssues": 64, "openIssues": 15, "totalPullRequests": 48, "openPullRequests": 2, "lastCommit": "2018-08-29 04:16:23", "lastCommitSHA": "ab6966eafd4a5de9d60a1d88f2054f5104dba241", "hasWiki": true, "isArchived": false, "languages": {}, "labels": []}
     repoBaseScore = 0
     #subtract the dates from creation date and last updated date to get an age score
@@ -108,7 +110,8 @@ def baseRepositoryGrading(repoInfo):
     
 def commitFolderGrading(filesToGradeList, repoBaseScore):
     global df
-    # filesToGradeList is formatted as [code path, json path]
+    global negitiveKeywordImpact
+    #filesToGradeList is formatted as [code path, json path]
     numberOfCommits = len(filesToGradeList)
     commitGrade = []
     for i in range(numberOfCommits):
@@ -150,7 +153,14 @@ def commitFolderGrading(filesToGradeList, repoBaseScore):
         # check the commit message for the words in prevCommitScoreAdjustmentNegitiveKeyWords
         for word in prevCommitScoreAdjustmentNegitiveKeyWords:
             if word in commitMSG:
-                prevCommitAdjustment += prevCommitScoreAdjustmentNegitiveKeyWordsValue
+                prevCommitAdjustment = prevCommitAdjustment + prevCommitScoreAdjustmentNegitiveKeyWordsValue
+
+        if (prevCommitAdjustment != 0):
+            #add prevCommitAdjustment to the previous commit
+            if (i != 0):
+                #hide warning
+
+                df.loc[df['Path'] == filesToGradeList[i-1][0].split(inputFolder)[1], 'fileGrade'] = df.loc[df['Path'] == filesToGradeList[i-1][0].split(inputFolder)[1], 'fileGrade'] + prevCommitAdjustment
 
         topBaseScoreAddition = 50
         topContributorScoreAddition = 15
@@ -174,10 +184,9 @@ def commitFolderGrading(filesToGradeList, repoBaseScore):
 
         finalGrade = np.clip(repoBaseScore + finalKeywordScore + finalContributorScore + finalCommitScore, 0, 100)
         finalPath = filesToGradeList[i][0].split(inputFolder)[1]
-        df = pd.concat([df, pd.DataFrame([[finalGrade, finalPath]], columns=['fileGrade', 'Path'])])
         commitGrade.append([finalGrade, finalPath])
-
-    return commitGrade
+    df = pd.concat([df, pd.DataFrame(commitGrade, columns=['fileGrade', 'Path'])], ignore_index=True)
+    return (commitGrade)
         
 
 
