@@ -46,27 +46,30 @@ def getGitInfo(gitInfoPath):
 
 #This expects a folder full of .py files and .json files with files names corisponding to numbers such as 0,1,2
 #If there's missing files we expect them to be because of duplicates or the file getting deleted at some point
-def getFilesToGradeFromRevisionFolder(FolderPath, codeExtension = ".py", jsonExtension = ".json"):
-    #check to see if it's a dir or a file, if it's a file strip it
-    if (os.path.isfile(FolderPath)):
+def getFilesToGradeFromRevisionFolder(FolderPath, codeExtension=".py", jsonExtension=".json"):
+    # check to see if it's a dir or a file, if it's a file strip it
+    if os.path.isfile(FolderPath):
         FolderPath = FolderPath.split("0.py")[0]
-    #List the files in a directory
+    # List the files in a directory
     filesToGradeList = []
     deletedFile = False
     try:
-        allFiles = os.listdir(FolderPath)
+        with os.scandir(FolderPath) as entries:
+            for entry in entries:
+                if entry.is_file() and entry.name.endswith(codeExtension):
+                    json_file = os.path.join(FolderPath, entry.name.replace(codeExtension, jsonExtension))
+                    if os.path.exists(json_file):
+                        filesToGradeList.append([entry.path, json_file])
+                    else:
+                        if entry.name == "DELETED.py":
+                            deletedFile = True
+            # sort the files in numerical order
+            filesToGradeList.sort(key=lambda x: int(os.path.basename(x[0]).split(".")[0]))
     except:
         return filesToGradeList
-    fileCount = len(allFiles)
-    #check to see if it's odd
-    if len(allFiles) % 2 != 0:
-        fileCount = fileCount - 1
-        deletedFile = True
-    fileCount = int(fileCount / 2)
-    for i in range(fileCount):
-        if (os.path.exists(os.path.join(FolderPath, str(i) + codeExtension)) and os.path.exists(os.path.join(FolderPath, str(i) + jsonExtension))):
-            filesToGradeList.append([os.path.join(FolderPath, str(i) + codeExtension), os.path.join(FolderPath, str(i) + jsonExtension)])
-    if (deletedFile):
+    fileCount = len(filesToGradeList)
+    # check to see if it's odd
+    if deletedFile:
         filesToGradeList.append(["DELETED", "DELETED"])
     return filesToGradeList
 
@@ -103,84 +106,78 @@ def baseRepositoryGrading(repoInfo):
         repoBaseScore = repoBaseScore -15
     return repoBaseScore
     
-def commitFolderGrading (filesToGradeList, repoBaseScore):
+def commitFolderGrading(filesToGradeList, repoBaseScore):
     global df
-    #filesToGradeList is formatted as [code path, json path]
+    # filesToGradeList is formatted as [code path, json path]
     numberOfCommits = len(filesToGradeList)
     commitGrade = []
-    for i in range(len(filesToGradeList)):
-        #get files
+    for i in range(numberOfCommits):
+        # get files
         commitinfo = ''
         currentJSONFilePath = filesToGradeList[i][1]
-        if (currentJSONFilePath == "DELETED"):
+        if currentJSONFilePath == "DELETED":
             continue
         try:
-            with open(filesToGradeList[i][1], 'r', encoding="utf8") as file:
+            with open(currentJSONFilePath, 'r', encoding="utf8") as file:
                 commitinfo = json.loads(file.read())
-        except:
+        except Exception as e:
+            print(f"Error opening {currentJSONFilePath}: {e}")
             continue
 
-        #get the number of contributors
-        #Formatting = "msg": "UI vision refactor (#2115)\n\n* refactor vision\r\n\r\n* don't show slow frame message when in preview mode\r\n\r\n* change draws to uint32_t\r\n\r\n* set vision_seen=false after destroy\r\n\r\n* remove vision_connect_thread\r\n\r\n* refactor ui_update\r\n\r\n* seelp 30ms when vision is not connected\r\n\r\n* remove should_swap\r\n\r\n* call ui_update_sizes before ui_draw\r\n\r\n* rebase\r\n\r\n* start bigger UI refactor\r\n\r\n* don't need the touch fd\r\n\r\n* fix qt build\r\n\r\n* more cleanup\r\n\r\n* more responsive\r\n\r\n* more refactor\r\n\r\n* fix for pc\r\n\r\n* poll for frames\r\n\r\n* lower CPU usage\r\n\r\n* cleanup\r\n\r\n* no more zmq\r\n\r\n* undo that\r\n\r\n* cleanup speed limit\r\n\r\n* fix sidebar severity for athena status\r\n\r\n* not aarch64\r\n\r\nCo-authored-by: deanlee <deanlee3@gmail.com>\r\nCo-authored-by: Comma Device <device@comma.ai>\r\nCo-authored-by: Willem Melching <willem.melching@gmail.com>"
-        authors= [commitinfo["author_email"]]
-        try:
-            if (commitinfo["msg"].find('Co-authored-by') != -1):
-                for author in commitinfo["msg"].split('Co-authored-by')[1:]:
-                    authors.append(author.split('<')[1].split('>')[0])
-        except:
-            pass
-        commitMSG = commitinfo["msg"]
+        # get the number of contributors
+        # Formatting = "msg": "UI vision refactor (#2115)\n\n* refactor vision\r\n\r\n* don't show slow frame message when in preview mode\r\n\r\n* change draws to uint32_t\r\n\r\n* set vision_seen=false after destroy\r\n\r\n* remove vision_connect_thread\r\n\r\n* refactor ui_update\r\n\r\n* seelp 30ms when vision is not connected\r\n\r\n* remove should_swap\r\n\r\n* call ui_update_sizes before ui_draw\r\n\r\n* rebase\r\n\r\n* start bigger UI refactor\r\n\r\n* don't need the touch fd\r\n\r\n* fix qt build\r\n\r\n* more cleanup\r\n\r\n* more responsive\r\n\r\n* more refactor\r\n\r\n* fix for pc\r\n\r\n* poll for frames\r\n\r\n* lower CPU usage\r\n\r\n* cleanup\r\n\r\n* no more zmq\r\n\r\n* undo that\r\n\r\n* cleanup speed limit\r\n\r\n* fix sidebar severity for athena status\r\n\r\n* not aarch64\r\n\r\nCo-authored-by: deanlee <deanlee3@gmail.com>\r\nCo-authored-by: Comma Device <device@comma.ai>\r\nCo-authored-by: Willem Melching <willem.melching@gmail.com>"
+        authors = [commitinfo.get("author_email")] + [author.split("<")[1].split(">")[0] for author in commitinfo.get("msg", "").split("Co-authored-by")[1:]]
+        commitMSG = commitinfo.get("msg", "")
+
         keyWordAdjustment = 0
         prevCommitAdjustment = 0
-        #check the commit message for the words in positiveKeyWords
+
+        # check the commit message for the words in positiveKeyWords
         for word in positiveKeyWords:
-            if (commitMSG.find(word) != -1):
-                keyWordAdjustment = keyWordAdjustment + positiveKeyWordsValue
-        
-        #check the commit message for the words in positiveKeyWordsBigImpact
+            if word in commitMSG:
+                keyWordAdjustment += positiveKeyWordsValue
+
+        # check the commit message for the words in positiveKeyWordsBigImpact
         for word in positiveKeyWordsBigImpact:
-            if (commitMSG.find(word) != -1):
-                keyWordAdjustment = keyWordAdjustment + positiveKeyWordsBigImpactValue
+            if word in commitMSG:
+                keyWordAdjustment += positiveKeyWordsBigImpactValue
 
-        #check the commit message for the words in negitiveKeyWords
+        # check the commit message for the words in negitiveKeyWords
         for word in negitiveKeyWords:
-            if (commitMSG.find(word) != -1):
-                keyWordAdjustment = keyWordAdjustment + negitiveKeyWordsValue
+            if word in commitMSG:
+                keyWordAdjustment += negitiveKeyWordsValue
 
-        #check the commit message for the words in prevCommitScoreAdjustmentNegitiveKeyWords
+        # check the commit message for the words in prevCommitScoreAdjustmentNegitiveKeyWords
         for word in prevCommitScoreAdjustmentNegitiveKeyWords:
-            if (commitMSG.find(word) != -1):
-                prevCommitAdjustment = prevCommitAdjustment + prevCommitScoreAdjustmentNegitiveKeyWordsValue
-        #Impliment this later
-        #if (prevCommitAdjustment != 0):
-            #dataSet1['grade'].last = dataSet1['grade'].last + prevCommitAdjustment
+            if word in commitMSG:
+                prevCommitAdjustment += prevCommitScoreAdjustmentNegitiveKeyWordsValue
 
         topBaseScoreAddition = 50
         topContributorScoreAddition = 15
         topKeyWordScoreAddition = 15
         topCommitNumbScoreAddition = 20
 
-        if (keyWordAdjustment > 5):
-            KeyWordAdjustment = 5
-        if (keyWordAdjustment < -5):
-            KeyWordAdjustment = -5
+        if keyWordAdjustment > 5:
+            keyWordAdjustment = 5
+        elif keyWordAdjustment < -5:
+            keyWordAdjustment = -5
 
         contributorscount = len(authors)
-        if (contributorscount > 3):
+        if contributorscount > 3:
             contributorscount = 3
 
-        finalKeywordScore = (keyWordAdjustment/5)*topKeyWordScoreAddition
-        finalContributorScore = ((contributorscount/3)*topContributorScoreAddition)
+        finalKeywordScore = (keyWordAdjustment / 5) * topKeyWordScoreAddition
+        finalContributorScore = ((contributorscount / 3) * topContributorScoreAddition)
         finalCommitScore = (topCommitNumbScoreAddition * (i / numberOfCommits))
 
-        if(repoBaseScore > topBaseScoreAddition):
-            repoBaseScore = topBaseScoreAddition
+        repoBaseScore = min(repoBaseScore, topBaseScoreAddition)
 
-        finalGrade = np.clip(repoBaseScore + finalKeywordScore + finalContributorScore + finalCommitScore, 0,100)
+        finalGrade = np.clip(repoBaseScore + finalKeywordScore + finalContributorScore + finalCommitScore, 0, 100)
         finalPath = filesToGradeList[i][0].split(inputFolder)[1]
         df = pd.concat([df, pd.DataFrame([[finalGrade, finalPath]], columns=['fileGrade', 'Path'])])
         commitGrade.append([finalGrade, finalPath])
-    return (commitGrade)
+
+    return commitGrade
         
 
 
@@ -192,6 +189,9 @@ def main():
     inputFolder = args.input
     outputFolder = args.output
     #get time
+    startTime = time.time()
+
+    #start time
     startTime = time.time()
 
     commitGrades = []
@@ -228,7 +228,7 @@ def main():
     else :
         print (length)
         print (df)
-    #get time
+    #end time
     endTime = time.time()
     print ("Time Taken: " + str(endTime - startTime))
 main()
