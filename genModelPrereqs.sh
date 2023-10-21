@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#genModelPrereqs.sh ~/SPDataset/smallDataset/S2DS245-1014/ ~/SPGenerations/
+
+
 # Store input paths as variables
 #!/bin/bash
 # Display command output
