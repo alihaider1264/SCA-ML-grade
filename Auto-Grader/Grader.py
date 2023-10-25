@@ -261,9 +261,8 @@ def main():
     args = parser.parse_args()
     inputFolder = args.input
     outputFolder = args.output
-    #get time
-    startTime = time.time()
-
+    
+def bootstrap(inputFolder, outputFolder = None, dateAsFileName = False):
     #start time
     startTime = time.time()
 
@@ -297,14 +296,19 @@ def main():
         if not os.path.exists(outputFolder):
             os.makedirs(outputFolder)
         df.to_pickle(os.path.join(outputFolder,"grades.pkl"))
+
         
     else :
         print (length)
         print (df)
+        
     #end time
     endTime = time.time()
     print ("Time Taken: " + str(endTime - startTime))
-main()
+    return df
+
+if __name__ == "__main__":
+    main()
 
 #Get Subfolders and return as a list
 
