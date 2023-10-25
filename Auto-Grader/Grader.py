@@ -222,6 +222,10 @@ def commitFolderGrading(filesToGradeList, repoBaseScore):
                 for j in range(prevCommitsToAdjust):
                     commitGrade[i - j - 1][0] = commitGrade[i - j - 1][0] + prevCommitAdjustment
 
+            #stats
+            prevCommitScoresUsed = prevCommitScoresUsed + 1
+            
+
         topBaseScoreAddition = 50
         topContributorScoreAddition = 15
         topKeyWordScoreAddition = 15
