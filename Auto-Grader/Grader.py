@@ -21,11 +21,34 @@ negitiveKeyWords = ['todo','tofix','bugged','fix me','fix-me']
 negitiveKeyWordsValue = -1
 negitiveKeywordImpact = 0
 
+
+
 threads = 16
 
 prevCommitScoreAdjustmentNegitiveKeyWords = ['revert','reverted','reverting','reverts', 'undo', 'undid', 'undone', 'undoing']
 prevCommitScoreAdjustmentNegitiveKeyWordsValue = -10
 df = pd.DataFrame(columns=['fileGrade', 'Path'])
+
+#Stats about what the grader is doing
+collectStats = True
+deletedFiles = 0
+rejectedFiles = []
+ageScoresUsed = 0
+contributorScoresUsed = 0
+starScoresUsed = 0
+forkScoresUsed = 0
+watchScoresUsed = 0
+issuesScoresUsed = 0
+posKeyWordScoresUsed = 0
+posKeyWordScoresFilesAffected = 0
+posKeyWordsBigImpatUsed = 0
+posKeyWordBigImpactFilesAffected = 0
+
+negKeyWordScoresUsed = 0
+
+prevCommitScoresUsed = 0
+commitScoresUsed = 0
+
 
 inputFolder,outputFolder = "",""
 parser = argparse.ArgumentParser(description='Input a Grade Downloader folder, and this will generate grades for each file')
@@ -101,6 +124,25 @@ def baseRepositoryGrading(repoInfo):
     else:
         issuesScore = -1
     top2Scores = sorted([ageScore, contributorRepoScore, starScore, forkScore, watchScore, issuesScore], reverse=True)[:2]
+    if collectStats:
+        global ageScoresUsed
+        global contributorScoresUsed
+        global starScoresUsed
+        global forkScoresUsed
+        global watchScoresUsed
+        global issuesScoresUsed
+        if ageScore in top2Scores:
+            ageScoresUsed = ageScoresUsed + 1
+        if contributorRepoScore in top2Scores:
+            contributorScoresUsed = contributorScoresUsed + 1
+        if starScore in top2Scores:
+            starScoresUsed = starScoresUsed + 1
+        if forkScore in top2Scores:
+            forkScoresUsed = forkScoresUsed + 1
+        if watchScore in top2Scores:
+            watchScoresUsed = watchScoresUsed + 1
+        if issuesScore in top2Scores:
+            issuesScoresUsed = issuesScoresUsed + 1
     #add the top 2 scores together
     repoBaseScore = repoBaseScore + top2Scores[0] + top2Scores[1]
     repoBaseScore = repoBaseScore/50
@@ -119,6 +161,10 @@ def commitFolderGrading(filesToGradeList, repoBaseScore):
         commitinfo = ''
         currentJSONFilePath = filesToGradeList[i][1]
         if currentJSONFilePath == "DELETED":
+            #deduct 30% of score for the whole file
+            for commitGradeIndex in range(len(commitGrade)):
+                commitGrade[commitGradeIndex][0] = commitGrade[commitGradeIndex][0] * .7
+                deletedFiles = deletedFiles + 1
             continue
         try:
             with open(currentJSONFilePath, 'r', encoding="utf8") as file:
@@ -139,28 +185,42 @@ def commitFolderGrading(filesToGradeList, repoBaseScore):
         for word in positiveKeyWords:
             if word in commitMSG:
                 keyWordAdjustment += positiveKeyWordsValue
+                #Stats
+                posKeyWordScoresUsed = posKeyWordScoresUsed + 1
+                if keyWordAdjustment == positiveKeyWordsValue:
+                    posKeyWordScoresFilesAffected = posKeyWordScoresFilesAffected + 1
 
         # check the commit message for the words in positiveKeyWordsBigImpact
         for word in positiveKeyWordsBigImpact:
             if word in commitMSG:
                 keyWordAdjustment += positiveKeyWordsBigImpactValue
+                #Stats
+                posKeyWordsBigImpatUsed = posKeyWordsBigImpatUsed + 1
+                if keyWordAdjustment == positiveKeyWordsBigImpactValue:
+                    posKeyWordBigImpactFilesAffected = posKeyWordBigImpactFilesAffected + 1
+
 
         # check the commit message for the words in negitiveKeyWords
         for word in negitiveKeyWords:
             if word in commitMSG:
                 keyWordAdjustment += negitiveKeyWordsValue
+                #Stats
+                negKeyWordScoresUsed = negKeyWordScoresUsed + 1
+
 
         # check the commit message for the words in prevCommitScoreAdjustmentNegitiveKeyWords
         for word in prevCommitScoreAdjustmentNegitiveKeyWords:
             if word in commitMSG:
                 prevCommitAdjustment = prevCommitAdjustment + prevCommitScoreAdjustmentNegitiveKeyWordsValue
+                #Stats
+                prevCommitScoresUsed = prevCommitScoresUsed + 1
 
         if (prevCommitAdjustment != 0):
             #add prevCommitAdjustment to the previous commit
-            if (i != 0):
-                #hide warning
-
-                df.loc[df['Path'] == filesToGradeList[i-1][0].split(inputFolder)[1], 'fileGrade'] = df.loc[df['Path'] == filesToGradeList[i-1][0].split(inputFolder)[1], 'fileGrade'] + prevCommitAdjustment
+            prevCommitsToAdjust = 1
+            if (i > prevCommitsToAdjust - 1):
+                for j in range(prevCommitsToAdjust):
+                    commitGrade[i - j - 1][0] = commitGrade[i - j - 1][0] + prevCommitAdjustment
 
         topBaseScoreAddition = 50
         topContributorScoreAddition = 15
