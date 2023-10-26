@@ -32,12 +32,14 @@ parser = argparse.ArgumentParser(description='Input a Grade Downloader folder, a
 parser.add_argument('-i', '--input', help='The input folder', required=True)
 parser.add_argument('-o', '--output', help='The output folder', required=False)
 def getSubFolders(path):
-    return([name for name in os.listdir(inputFolder) if os.path.isdir(os.path.join(inputFolder, name)) and name != "git"])
+    return([name for name in os.listdir(path) if os.path.isdir(os.path.join(path, name)) and name != "git"])
 
-def getFiles(foldersToProcess):
+def getFiles(foldersToProcess,path):
+    global inputFolder
+    inputFolder = path
     filesToIndex = []
     for folder in foldersToProcess:
-        filesToIndex.append(mcall.searchFileName(os.path.join(inputFolder,folder), "0.py"))
+        filesToIndex.append(mcall.searchFileName(os.path.join(path,folder), "0.py"))
     return filesToIndex
 
 def getGitInfo(gitInfoPath):
@@ -129,7 +131,10 @@ def commitFolderGrading(filesToGradeList, repoBaseScore):
 
         # get the number of contributors
         # Formatting = "msg": "UI vision refactor (#2115)\n\n* refactor vision\r\n\r\n* don't show slow frame message when in preview mode\r\n\r\n* change draws to uint32_t\r\n\r\n* set vision_seen=false after destroy\r\n\r\n* remove vision_connect_thread\r\n\r\n* refactor ui_update\r\n\r\n* seelp 30ms when vision is not connected\r\n\r\n* remove should_swap\r\n\r\n* call ui_update_sizes before ui_draw\r\n\r\n* rebase\r\n\r\n* start bigger UI refactor\r\n\r\n* don't need the touch fd\r\n\r\n* fix qt build\r\n\r\n* more cleanup\r\n\r\n* more responsive\r\n\r\n* more refactor\r\n\r\n* fix for pc\r\n\r\n* poll for frames\r\n\r\n* lower CPU usage\r\n\r\n* cleanup\r\n\r\n* no more zmq\r\n\r\n* undo that\r\n\r\n* cleanup speed limit\r\n\r\n* fix sidebar severity for athena status\r\n\r\n* not aarch64\r\n\r\nCo-authored-by: deanlee <deanlee3@gmail.com>\r\nCo-authored-by: Comma Device <device@comma.ai>\r\nCo-authored-by: Willem Melching <willem.melching@gmail.com>"
-        authors = [commitinfo.get("author_email")] + [author.split("<")[1].split(">")[0] for author in commitinfo.get("msg", "").split("Co-authored-by")[1:]]
+        try:
+            authors = [commitinfo.get("author_email")] + [author.split("<")[1].split(">")[0] for author in commitinfo.get("msg", "").split("Co-authored-by")[1:]]
+        except:
+            authors = [commitinfo.get("author_email")]
         commitMSG = commitinfo.get("msg", "")
 
         keyWordAdjustment = 0
@@ -185,6 +190,8 @@ def commitFolderGrading(filesToGradeList, repoBaseScore):
         finalGrade = np.clip(repoBaseScore + finalKeywordScore + finalContributorScore + finalCommitScore, 0, 100)
         finalPath = filesToGradeList[i][0].split(inputFolder)[1]
         commitGrade.append([finalGrade, finalPath])
+    #clear any empty rows
+    commitGrade = [x for x in commitGrade if x != []]
     df = pd.concat([df, pd.DataFrame(commitGrade, columns=['fileGrade', 'Path'])], ignore_index=True)
     return (commitGrade)
         
@@ -197,6 +204,7 @@ def main():
     args = parser.parse_args()
     inputFolder = args.input
     outputFolder = args.output
+    bootstrap(inputFolder, outputFolder)
     
 def bootstrap(inputFolder, outputFolder = None, dateAsFileName = False):
     #start time
@@ -205,7 +213,7 @@ def bootstrap(inputFolder, outputFolder = None, dateAsFileName = False):
     commitGrades = []
     foldersToProcess = getSubFolders(inputFolder)
 
-    filesToProcess = getFiles(foldersToProcess)
+    filesToProcess = getFiles(foldersToProcess, inputFolder)
     
     for i in range(len(foldersToProcess)):
         repositoryGrade = baseRepositoryGrading(json.loads(getGitInfo(os.path.join(inputFolder,foldersToProcess[i])).split("\n")[0]))
