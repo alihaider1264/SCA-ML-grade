@@ -100,7 +100,24 @@ def getFilesToGradeFromRevisionFolder(FolderPath, codeExtension=".py", jsonExten
     return filesToGradeList
 
 def baseRepositoryGrading(repoInfo):
+
     global negitiveKeywordImpact
+    global deletedFiles
+    global rejectedFiles
+    global ageScoresUsed
+    global contributorScoresUsed
+    global starScoresUsed
+    global forkScoresUsed
+    global watchScoresUsed
+    global issuesScoresUsed
+    global posKeyWordScoresUsed
+    global posKeyWordScoresFilesAffected
+    global posKeyWordsBigImpatUsed
+    global posKeyWordBigImpactFilesAffected
+    global negKeyWordScoresUsed
+    global prevCommitScoresUsed
+    global commitScoresUsed
+    
     #Example {"id": 3584343, "name": "davebshow/goblin", "isFork": false, "commits": 363, "branches": 31, "defaultBranch": "master", "releases": 0, "contributors": 8, "license": "Other", "watchers": 13, "stargazers": 90, "forks": 21, "size": 487, "createdAt": "2016-07-01 05:59:12", "pushedAt": "2018-11-06 01:10:31", "updatedAt": "2020-12-04 09:55:15", "homepage": "", "mainLanguage": "Python", "totalIssues": 64, "openIssues": 15, "totalPullRequests": 48, "openPullRequests": 2, "lastCommit": "2018-08-29 04:16:23", "lastCommitSHA": "ab6966eafd4a5de9d60a1d88f2054f5104dba241", "hasWiki": true, "isArchived": false, "languages": {}, "labels": []}
     repoBaseScore = 0
     #subtract the dates from creation date and last updated date to get an age score
@@ -152,13 +169,32 @@ def baseRepositoryGrading(repoInfo):
         repoBaseScore = repoBaseScore -15
     return repoBaseScore
     
-def commitFolderGrading(filesToGradeList, repoBaseScore):
+def commitFolderGrading(filesToGradeList, repoBaseScore, commitsLowerLimit = 5):
     global df
     global negitiveKeywordImpact
+    global deletedFiles
+    global rejectedFiles
+    global ageScoresUsed
+    global contributorScoresUsed
+    global starScoresUsed
+    global forkScoresUsed
+    global watchScoresUsed
+    global issuesScoresUsed
+    global posKeyWordScoresUsed
+    global posKeyWordScoresFilesAffected
+    global posKeyWordsBigImpatUsed
+    global posKeyWordBigImpactFilesAffected
+    global negKeyWordScoresUsed
+    global prevCommitScoresUsed
+    global commitScoresUsed
+    #
+
     #filesToGradeList is formatted as [code path, json path]
     numberOfCommits = len(filesToGradeList)
     commitGrade = []
     for i in range(numberOfCommits):
+        if numberOfCommits < commitsLowerLimit:
+            return commitGrade
         # get files
         commitinfo = ''
         currentJSONFilePath = filesToGradeList[i][1]
@@ -283,7 +319,7 @@ def bootstrap(inputFolder, outputFolder = None, dateAsFileName = False):
         repositoryGrade = baseRepositoryGrading(json.loads(getGitInfo(os.path.join(inputFolder,foldersToProcess[i])).split("\n")[0]))
         repositoryFiles = filesToProcess[i]
         #print progress bar 
-        print (mcall.printProgressBar(i, len(foldersToProcess), "Processing Files"))
+        print (mcall.printProgressBar(i, len(foldersToProcess), "Processing Files", "Complete", 1, 50))
         for j in range(len(repositoryFiles)):
             if (threads != 0):
                 while (len(th.enumerate()) > threads):
