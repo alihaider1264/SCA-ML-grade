@@ -27,7 +27,6 @@ def searchFiles(path, fileformats = [], excludeNames = []):
     for root, dirs, files in os.walk(path):
         for file in files:
             if file.split('.')[-1] in fileformats and (file not in excludeNames):
-                    print (file)
                     #code to generate a list of paths of files to generate logs for
                     filesToDo.append(os.path.join(root, file).split(path)[1])
     return filesToDo

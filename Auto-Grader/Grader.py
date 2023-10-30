@@ -292,6 +292,9 @@ def commitFolderGrading(filesToGradeList, repoBaseScore, commitsLowerLimit = 5):
         commitGrade.append([finalGrade, finalPath])
     #clear any empty rows
     commitGrade = [x for x in commitGrade if x != []]
+    #hide futurewarning
+    import warnings
+    warnings.simplefilter(action='ignore', category=FutureWarning)
     df = pd.concat([df, pd.DataFrame(commitGrade, columns=['fileGrade', 'Path'])], ignore_index=True)
     return (commitGrade)
         
@@ -319,7 +322,7 @@ def bootstrap(inputFolder, outputFolder = None, dateAsFileName = False):
         repositoryGrade = baseRepositoryGrading(json.loads(getGitInfo(os.path.join(inputFolder,foldersToProcess[i])).split("\n")[0]))
         repositoryFiles = filesToProcess[i]
         #print progress bar 
-        print (mcall.printProgressBar(i, len(foldersToProcess), "Processing Files", "Complete", 1, 50))
+        mcall.printProgressBar(i, len(foldersToProcess), prefix = "Processing Files", suffix = "Complete", length = 50)
         for j in range(len(repositoryFiles)):
             if (threads != 0):
                 while (len(th.enumerate()) > threads):
