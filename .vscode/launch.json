@@ -14,7 +14,7 @@
             "justMyCode": true,
             //include launch arguments
             //"args": ["-i","~/SPDataset/MiniTestingDataset"],
-            "args": ["-i", "/home/mcall/SPGenerations/Tokens/1698442894/"]
+            "args": ["-i", "/mnt/SPDrive/SPGenerations/Tokens/1698759274/"]
         }
     ]
 }

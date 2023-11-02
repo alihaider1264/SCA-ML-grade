@@ -37,13 +37,13 @@ def initTokenGroups():
     tokenGroups.append(["if", "else", "elif", "while", "for", "in", "break", "continue", "return", "try", "except", 
                     "finally", "raise", "assert", "with", "as", "yield", "from", "global", "nonlocal", "lambda", "pass"])
     #Group for 
-    tokenGroups.append(["def", "class"])
+    tokenGroups.append(["def", "class", "self"])
 
     #Group for keywords
     tokenGroups.append(["and", "or", "not", "is", "in",])
 
-    #Group for built in functions
-    tokenGroups.append(["True", "False", "None"])
+    #Group for static values
+    tokenGroups.append(["True", "False", "None", "true", "false", "none"])
 
 
     tokenGroups.append(["(", ")", "[", "]", "{", "}", ])
@@ -73,6 +73,8 @@ def initTokenGroups():
 
     #common var names that missed or skipped similarization
     tokenGroups.append(["x", "y", "i", "n"])
+
+    
 
 
 
