@@ -1,6 +1,7 @@
 #!/bin/bash
 
 #genModelPrereqs.sh ~/SPDataset/smallDataset/S2DS245-1014/ ~/SPGenerations/
+#genModelPrereqs.sh ~/SPDataset/smallDataset/S2DS245-1014/ /mnt/SPDrive/SPGenerations
 
 
 # Store input paths as variables

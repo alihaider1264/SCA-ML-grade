@@ -17,14 +17,14 @@ parser.add_argument('-o', '--output', type=str, required=False,
 tokenGroups = []
 
 def initTokenGroups():
-
+    global tokenGroups
     #Group for numbers 1 through 100 as strings
     numbArray = []
     for i in range(1, 101):
-        numbArray.append([str(i)])
+        numbArray.append(str(i))
     tokenGroups.append(numbArray)
     #Group for Literals
-    tokenGroups.append(["\"strlit\"", "\'numlit\'", 
+    tokenGroups.append(['strlit', "numlit", 
     ])
     #Group for grouping
     tokenGroups.append([ "var1", "funct1", 'class1'])
@@ -46,7 +46,7 @@ def initTokenGroups():
     tokenGroups.append(["True", "False", "None", "true", "false", "none"])
 
 
-    tokenGroups.append(["(", ")", "[", "]", "{", "}", ])
+    tokenGroups.append(["(", ")", "[", "]", "{", "}", "\\t" , "\'", "'''"])
 
     #Group for Import Statements
     tokenGroups.append(["import", "as", "with", "from",])
@@ -81,11 +81,15 @@ def initTokenGroups():
 
 
 def main():
+    initTokenGroups()
     args = parser.parse_args()
     input_file = args.input + "/tokenizer.json"
     output_file = args.output
     with open(input_file) as f:
         tokenizerModel = tokenizer_from_json(f.read())
+
+    initilizeTokenTranslation(tokenizerModel)
+    exit()
     sortedWordIndex = sorted(tokenizerModel.word_index.items(), key=lambda kv: kv[1])
     #remove any values in tokenGroups
     initTokenGroups()
@@ -96,9 +100,41 @@ def main():
                     sortedWordIndex.pop(i)
                     break
 
-    #Print top 100
-    print("Top 100")
-    print(sortedWordIndex[:100])
+def initilizeTokenTranslation(tokenizer):
+    tokenTranslation = []
+    test = []
+    fullTokenSequence = []
+    for i in range(1, tokenizer.num_words):
+        test.append(i)
+        tokenTranslation.append(len(tokenGroups))
+
+    #make test into a numpy array
+    test = np.array(test)
+    print (test)
+
+    #the index will equal a token value, the value at the index will represent the catigory
+    fullTokenSequence = str(tokenizer.sequences_to_texts([test]))
+    print (fullTokenSequence)
+
+    fullTokenSequence = fullTokenSequence[2:-2]
+    fullTokenSequence = fullTokenSequence.split(" ")
+
+    #split the string into a list
+    print (fullTokenSequence)
+    
+    for i in range(len(tokenTranslation)):
+        #see if the token is in the tokenGroups
+        for j in range(len(tokenGroups)):
+            if fullTokenSequence[i] in tokenGroups[j]:
+                tokenTranslation[i] = j
+                break
+
+    print (tokenTranslation)
+    print (fullTokenSequence[2])
+    
+    
+    
+
 
 
 if __name__ == '__main__':
