@@ -4,6 +4,7 @@
 #genModelPrereqs.sh ~/SPDataset/smallDataset/S2DS245-1014/ /mnt/SPDrive/SPGenerations
 
 
+
 # Store input paths as variables
 #!/bin/bash
 # Display command output
@@ -20,6 +21,10 @@ grades_path=$grades_path$datevar
 token_path=$output_path"Tokens/"
 token_path=$token_path$datevar
 
+catigory_input=$token_path
+catigory_path=$token_path
+
+
 
 
 
@@ -27,5 +32,10 @@ token_path=$token_path$datevar
 python3 ./Auto-Grader/Grader.py -i $dataset_path -o $grades_path 
 #Run this file using the following command:
 python3 ./Model-Generation/SCA-Tokenizer/TokenizerManager.py -i $dataset_path -o $token_path
+#Run this file using the following command:
+python3 ./Model-Generation/TokenCatigoryGenerator/TokenCatigoryGenerator.py -i $token_path -o $token_path
+#Run this file using the following command:
+python3 ./Model-Generation/TokenCatigoryGenerator/TokenCatigoryApplier.py -i $token_path -o $token_path
+
 
 

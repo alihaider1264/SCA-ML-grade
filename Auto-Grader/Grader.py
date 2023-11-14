@@ -288,6 +288,8 @@ def commitFolderGrading(filesToGradeList, repoBaseScore, commitsLowerLimit = 5):
         repoBaseScore = min(repoBaseScore, topBaseScoreAddition)
 
         finalGrade = np.clip(repoBaseScore + finalKeywordScore + finalContributorScore + finalCommitScore, 0, 100)
+        if finalGrade < 0:
+            finalGrade = 0
         finalPath = filesToGradeList[i][0].split(inputFolder)[1]
         commitGrade.append([finalGrade, finalPath])
     #clear any empty rows
