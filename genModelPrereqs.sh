@@ -33,9 +33,9 @@ python3 ./Auto-Grader/Grader.py -i $dataset_path -o $grades_path
 #Run this file using the following command:
 python3 ./Model-Generation/SCA-Tokenizer/TokenizerManager.py -i $dataset_path -o $token_path
 #Run this file using the following command:
-python3 ./Model-Generation/TokenCatigoryGenerator/TokenCatigoryGenerator.py -i $token_path -o $token_path
+#python3 ./Model-Generation/TokenCatigoryGenerator/TokenCatigoryGenerator.py -i $token_path -o $token_path
 #Run this file using the following command:
-python3 ./Model-Generation/TokenCatigoryGenerator/TokenCatigoryApplier.py -i $token_path -o $token_path
+#python3 ./Model-Generation/TokenCatigoryGenerator/TokenCatigoryApplier.py -i $token_path -o $token_path
 
 
 
