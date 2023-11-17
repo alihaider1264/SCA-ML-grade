@@ -62,7 +62,7 @@ def getFiles(foldersToProcess,path):
     inputFolder = path
     filesToIndex = []
     for folder in foldersToProcess:
-        filesToIndex.append(mcall.searchFileName(os.path.join(path,folder), "0.py"))
+        filesToIndex.append(mcall.searchFileName(os.path.join(path,folder), "0.cpp"))
     return filesToIndex
 
 def getGitInfo(gitInfoPath):
@@ -72,10 +72,10 @@ def getGitInfo(gitInfoPath):
 
 #This expects a folder full of .py files and .json files with files names corisponding to numbers such as 0,1,2
 #If there's missing files we expect them to be because of duplicates or the file getting deleted at some point
-def getFilesToGradeFromRevisionFolder(FolderPath, codeExtension=".py", jsonExtension=".json"):
+def getFilesToGradeFromRevisionFolder(FolderPath, codeExtension=".cpp", jsonExtension=".json"):
     # check to see if it's a dir or a file, if it's a file strip it
     if os.path.isfile(FolderPath):
-        FolderPath = FolderPath.split("0.py")[0]
+        FolderPath = FolderPath.split("0.cpp")[0]
     # List the files in a directory
     filesToGradeList = []
     deletedFile = False
@@ -87,7 +87,7 @@ def getFilesToGradeFromRevisionFolder(FolderPath, codeExtension=".py", jsonExten
                     if os.path.exists(json_file):
                         filesToGradeList.append([entry.path, json_file])
                     else:
-                        if entry.name == "DELETED.py":
+                        if entry.name == "DELETED.cpp":
                             deletedFile = True
             # sort the files in numerical order
             filesToGradeList.sort(key=lambda x: int(os.path.basename(x[0]).split(".")[0]))
@@ -122,8 +122,11 @@ def baseRepositoryGrading(repoInfo):
     repoBaseScore = 0
     #subtract the dates from creation date and last updated date to get an age score
     #'%Y-%m-%d T%H:%M:%SZ'
-    repoAge = (datetime.datetime.strptime(repoInfo['updatedAt'], '%Y-%m-%d %H:%M:%S') - datetime.datetime.strptime(repoInfo['createdAt'], '%Y-%m-%d %H:%M:%S'))
-    repoAge = repoAge.days
+    try:
+        repoAge = (datetime.datetime.strptime(repoInfo['updatedAt'], '%Y-%m-%d %H:%M:%S') - datetime.datetime.strptime(repoInfo['createdAt'], '%Y-%m-%d %H:%M:%S'))
+        repoAge = repoAge.days
+    except:
+        repoAge = 0
     #The older the repo the higher the score
     ageScore = 200 - (repoAge/365)*100
     #add a score based on the number of contributors
@@ -169,7 +172,7 @@ def baseRepositoryGrading(repoInfo):
         repoBaseScore = repoBaseScore -15
     return repoBaseScore
     
-def commitFolderGrading(filesToGradeList, repoBaseScore, commitsLowerLimit = 5):
+def commitFolderGrading(filesToGradeList, repoBaseScore, commitsLowerLimit = 0):
     global df
     global negitiveKeywordImpact
     global deletedFiles
