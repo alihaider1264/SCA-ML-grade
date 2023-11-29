@@ -306,3 +306,9 @@ Open this link in your browser https://vscode.dev/tunnel/station-extra/home/jare
 [2023-11-29 16:00:36] info [rpc.33] Found running server (pid=517126)
 [2023-11-29 16:06:43] info [rpc.32] Disposed of connection to running server.
 [2023-11-29 16:06:44] info [rpc.33] Disposed of connection to running server.
+[2023-11-29 16:26:34] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 5
+[2023-11-29 16:26:34] info [russh::server] wrote id
+[2023-11-29 16:26:34] info [russh::server] read other id
+[2023-11-29 16:26:34] info [russh::server] session is running
+[2023-11-29 16:26:35] info [rpc.34] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-29 16:26:35] info [rpc.34] Found running server (pid=517126)
