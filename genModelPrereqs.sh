@@ -3,7 +3,7 @@
 #genModelPrereqs.sh ~/SPDataset/smallDataset/S2DS245-1014/ ~/SPGenerations/
 #genModelPrereqs.sh ~/SPDataset/smallDataset/S2DS245-1014/ /mnt/SPDrive/SPGenerations
 #genModelPrereqs.sh /mnt/SPDrive/MiniDatasetPath/CPPTest1/ /mnt/SPDrive/SPGenerationsCPP
-
+#./genModelPrereqs.sh /home/jaredrussell/CPPDatasetMin/ /home/jaredrussell/CPPMLGenMini/
 
 
 # Store input paths as variables

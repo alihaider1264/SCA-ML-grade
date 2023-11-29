@@ -324,7 +324,10 @@ def bootstrap(inputFolder, outputFolder = None, dateAsFileName = False):
     filesToProcess = getFiles(foldersToProcess, inputFolder)
     
     for i in range(len(foldersToProcess)):
-        repositoryGrade = baseRepositoryGrading(json.loads(getGitInfo(os.path.join(inputFolder,foldersToProcess[i])).split("\n")[0]))
+        try:
+            repositoryGrade = baseRepositoryGrading(json.loads(getGitInfo(os.path.join(inputFolder,foldersToProcess[i])).split("\n")[0]))
+        except:
+            continue
         repositoryFiles = filesToProcess[i]
         #print progress bar 
         mcall.printProgressBar(i, len(foldersToProcess), prefix = "Processing Files", suffix = "Complete", length = 50)
