@@ -312,3 +312,59 @@ Open this link in your browser https://vscode.dev/tunnel/station-extra/home/jare
 [2023-11-29 16:26:34] info [russh::server] session is running
 [2023-11-29 16:26:35] info [rpc.34] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
 [2023-11-29 16:26:35] info [rpc.34] Found running server (pid=517126)
+[2023-11-29 16:34:26] info [tunnels::connections::ws] error reading websocket: WebSocket protocol error: Connection reset without closing handshake
+[2023-11-29 16:34:26] warn Tunnel exited unexpectedly but gracefully, reconnecting
+[2023-11-29 16:34:26] info [rpc.34] Disposed of connection to running server.
+[2023-11-29 16:34:48] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 2
+[2023-11-29 16:34:48] info [russh::server] wrote id
+[2023-11-29 16:34:48] info [russh::server] read other id
+[2023-11-29 16:34:48] info [russh::server] session is running
+[2023-11-29 16:34:49] info [rpc.35] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-29 16:34:49] info [rpc.35] Found running server (pid=517126)
+[2023-11-29 16:57:32] info [tunnels::connections::ws] error reading websocket: WebSocket protocol error: Connection reset without closing handshake
+[2023-11-29 16:57:32] warn Tunnel exited unexpectedly but gracefully, reconnecting
+[2023-11-29 16:57:32] info [rpc.35] Disposed of connection to running server.
+[2023-11-29 16:59:53] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 2
+[2023-11-29 16:59:53] info [russh::server] wrote id
+[2023-11-29 16:59:53] info [russh::server] read other id
+[2023-11-29 16:59:53] info [russh::server] session is running
+[2023-11-29 16:59:55] info [rpc.36] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-29 16:59:55] info [rpc.36] Found running server (pid=517126)
+[2023-11-29 17:01:48] info [rpc.36] Disposed of connection to running server.
+[2023-11-29 17:10:49] info [tunnels::connections::ws] error reading websocket: WebSocket protocol error: Connection reset without closing handshake
+[2023-11-29 17:10:49] warn Tunnel exited unexpectedly but gracefully, reconnecting
+[2023-11-29 17:25:07] info [tunnels::connections::ws] websocket pong timed out, closing
+[2023-11-29 17:25:07] warn Tunnel exited unexpectedly but gracefully, reconnecting
+[2023-11-29 17:33:03] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 2
+[2023-11-29 17:33:03] info [russh::server] wrote id
+[2023-11-29 17:33:03] info [russh::server] read other id
+[2023-11-29 17:33:03] info [russh::server] session is running
+[2023-11-29 17:33:05] info [rpc.37] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-29 17:33:05] info [rpc.37] Found running server (pid=517126)
+[2023-11-29 17:42:25] info [tunnels::connections::ws] error reading websocket: WebSocket protocol error: Connection reset without closing handshake
+[2023-11-29 17:42:25] warn Tunnel exited unexpectedly but gracefully, reconnecting
+[2023-11-29 17:42:25] info [rpc.37] Disposed of connection to running server.
+[2023-11-29 17:58:13] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 2
+[2023-11-29 17:58:13] info [russh::server] wrote id
+[2023-11-29 17:58:13] info [russh::server] read other id
+[2023-11-29 17:58:13] info [russh::server] session is running
+[2023-11-29 17:58:15] info [rpc.38] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-29 17:58:15] info [rpc.38] Found running server (pid=517126)
+[2023-11-29 18:01:26] info [tunnels::connections::ws] error reading websocket: WebSocket protocol error: Connection reset without closing handshake
+[2023-11-29 18:01:26] warn Tunnel exited unexpectedly but gracefully, reconnecting
+[2023-11-29 18:01:26] info [rpc.38] Disposed of connection to running server.
+[2023-11-29 18:01:33] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 2
+[2023-11-29 18:01:33] info [russh::server] wrote id
+[2023-11-29 18:01:33] info [russh::server] read other id
+[2023-11-29 18:01:33] info [russh::server] session is running
+[2023-11-29 18:01:34] info [rpc.39] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-29 18:01:34] info [rpc.39] Found running server (pid=517126)
+[2023-11-29 18:37:41] info [tunnels::connections::ws] error reading websocket: WebSocket protocol error: Connection reset without closing handshake
+[2023-11-29 18:37:41] warn Tunnel exited unexpectedly but gracefully, reconnecting
+[2023-11-29 18:37:41] info [rpc.39] Disposed of connection to running server.
+[2023-11-29 18:38:14] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 2
+[2023-11-29 18:38:14] info [russh::server] wrote id
+[2023-11-29 18:38:14] info [russh::server] read other id
+[2023-11-29 18:38:14] info [russh::server] session is running
+[2023-11-29 18:38:15] info [rpc.40] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-29 18:38:15] info [rpc.40] Found running server (pid=517126)
