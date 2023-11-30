@@ -368,3 +368,58 @@ Open this link in your browser https://vscode.dev/tunnel/station-extra/home/jare
 [2023-11-29 18:38:14] info [russh::server] session is running
 [2023-11-29 18:38:15] info [rpc.40] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
 [2023-11-29 18:38:15] info [rpc.40] Found running server (pid=517126)
+[2023-11-29 18:54:57] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 3
+[2023-11-29 18:54:57] info [russh::server] wrote id
+[2023-11-29 18:54:57] info [russh::server] read other id
+[2023-11-29 18:54:57] info [russh::server] session is running
+[2023-11-29 18:54:59] info [rpc.41] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-29 18:54:59] info [rpc.41] Found running server (pid=517126)
+[2023-11-29 19:02:58] info [rpc.40] Disposed of connection to running server.
+[2023-11-29 19:04:38] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 4
+[2023-11-29 19:04:38] info [russh::server] wrote id
+[2023-11-29 19:04:38] info [russh::server] read other id
+[2023-11-29 19:04:38] info [russh::server] session is running
+[2023-11-29 19:04:40] info [rpc.42] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-29 19:04:40] info [rpc.42] Found running server (pid=517126)
+[2023-11-29 19:12:00] info [rpc.41] Disposed of connection to running server.
+[2023-11-29 19:29:02] info [tunnels::connections::ws] websocket pong timed out, closing
+[2023-11-29 19:29:02] warn Tunnel exited unexpectedly but gracefully, reconnecting
+[2023-11-29 19:29:02] info [rpc.42] Disposed of connection to running server.
+[2023-11-29 19:29:47] info [tunnels::connections::ws] error reading websocket: WebSocket protocol error: Connection reset without closing handshake
+[2023-11-29 19:29:47] warn Tunnel exited unexpectedly but gracefully, reconnecting
+[2023-11-29 19:51:49] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 2
+[2023-11-29 19:51:49] info [russh::server] wrote id
+[2023-11-29 19:51:49] info [russh::server] read other id
+[2023-11-29 19:51:49] info [russh::server] session is running
+[2023-11-29 19:51:51] info [rpc.43] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-29 19:51:51] info [rpc.43] Found running server (pid=517126)
+[2023-11-29 21:01:22] info [rpc.43] Disposed of connection to running server.
+[2023-11-29 21:05:57] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 3
+[2023-11-29 21:05:57] info [russh::server] wrote id
+[2023-11-29 21:05:57] info [russh::server] read other id
+[2023-11-29 21:05:57] info [russh::server] session is running
+[2023-11-29 21:05:59] info [rpc.44] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-29 21:05:59] info [rpc.44] Starting server...
+[2023-11-29 21:05:59] info [rpc.44] Server started
+[2023-11-29 21:06:03] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 4
+[2023-11-29 21:06:03] info [russh::server] wrote id
+[2023-11-29 21:06:03] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 5
+[2023-11-29 21:06:03] info [russh::server] wrote id
+[2023-11-29 21:06:03] info [russh::server] read other id
+[2023-11-29 21:06:03] info [russh::server] session is running
+[2023-11-29 21:06:03] info [russh::server] read other id
+[2023-11-29 21:06:03] info [russh::server] session is running
+[2023-11-29 21:06:34] info [rpc.47] Disposed of connection to running server.
+[2023-11-29 21:06:34] info [rpc.46] Disposed of connection to running server.
+[2023-11-29 21:06:44] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 6
+[2023-11-29 21:06:44] info [russh::server] wrote id
+[2023-11-29 21:06:44] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 7
+[2023-11-29 21:06:44] info [russh::server] wrote id
+[2023-11-29 21:06:44] info [russh::server] read other id
+[2023-11-29 21:06:44] info [russh::server] session is running
+[2023-11-29 21:06:44] info [russh::server] read other id
+[2023-11-29 21:06:44] info [russh::server] session is running
+[2023-11-29 21:06:53] info [rpc.44] Forwarding port 45235
+[2023-11-29 21:06:55] info [rpc.44] Forwarding port 46637
+[2023-11-29 21:07:12] warn [rpc.44] error handling call: NoAttachedServerError(NoAttachedServerError)
+[2023-11-29 21:09:17] info [rpc.44] Forwarding port 45273
