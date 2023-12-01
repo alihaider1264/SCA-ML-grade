@@ -423,3 +423,129 @@ Open this link in your browser https://vscode.dev/tunnel/station-extra/home/jare
 [2023-11-29 21:06:55] info [rpc.44] Forwarding port 46637
 [2023-11-29 21:07:12] warn [rpc.44] error handling call: NoAttachedServerError(NoAttachedServerError)
 [2023-11-29 21:09:17] info [rpc.44] Forwarding port 45273
+[2023-11-29 21:51:14] info [rpc.49] Disposed of connection to running server.
+[2023-11-29 21:51:40] info [rpc.48] Disposed of connection to running server.
+[2023-11-29 21:52:55] info [rpc.44] Disposed of connection to running server.
+[2023-11-29 23:10:53] info [tunnels::connections::ws] error reading websocket: WebSocket protocol error: Connection reset without closing handshake
+[2023-11-29 23:10:53] warn Tunnel exited unexpectedly but gracefully, reconnecting
+[2023-11-29 23:34:07] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 2
+[2023-11-29 23:34:07] info [russh::server] wrote id
+[2023-11-29 23:34:08] info [russh::server] read other id
+[2023-11-29 23:34:08] info [russh::server] session is running
+[2023-11-30 10:16:51] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 3
+[2023-11-30 10:16:51] info [russh::server] wrote id
+[2023-11-30 10:16:51] info [russh::server] read other id
+[2023-11-30 10:16:51] info [russh::server] session is running
+[2023-11-30 10:17:00] info [rpc.50] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-30 10:17:00] info [rpc.50] Starting server...
+[2023-11-30 10:17:00] info [rpc.50] Server started
+[2023-11-30 10:17:12] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 4
+[2023-11-30 10:17:12] info [russh::server] wrote id
+[2023-11-30 10:17:12] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 5
+[2023-11-30 10:17:12] info [russh::server] wrote id
+[2023-11-30 10:17:12] info [russh::server] read other id
+[2023-11-30 10:17:12] info [russh::server] session is running
+[2023-11-30 10:17:12] info [russh::server] read other id
+[2023-11-30 10:17:12] info [russh::server] session is running
+[2023-11-30 10:17:24] info [rpc.50] Forwarding port 36953
+[2023-11-30 10:17:26] info [rpc.50] Forwarding port 45205
+[2023-11-30 10:54:46] info [rpc.50] Disposed of connection to running server.
+[2023-11-30 10:55:14] info [rpc.53] Disposed of connection to running server.
+[2023-11-30 10:55:15] info [rpc.52] Disposed of connection to running server.
+[2023-11-30 13:42:44] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 6
+[2023-11-30 13:42:44] info [russh::server] wrote id
+[2023-11-30 13:42:44] info [russh::server] read other id
+[2023-11-30 13:42:44] info [russh::server] session is running
+[2023-11-30 13:42:53] info [rpc.54] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-30 13:42:53] info [rpc.54] Found running server (pid=1106040)
+[2023-11-30 14:05:09] info [rpc.54] Disposed of connection to running server.
+[2023-11-30 15:20:28] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 7
+[2023-11-30 15:20:28] info [russh::server] wrote id
+[2023-11-30 15:20:28] info [russh::server] read other id
+[2023-11-30 15:20:28] info [russh::server] session is running
+[2023-11-30 15:20:30] info [rpc.55] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-30 15:20:30] info [rpc.55] Found running server (pid=1106040)
+[2023-11-30 15:29:59] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 8
+[2023-11-30 15:29:59] info [russh::server] wrote id
+[2023-11-30 15:29:59] info [russh::server] read other id
+[2023-11-30 15:29:59] info [russh::server] session is running
+[2023-11-30 15:30:01] info [rpc.56] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-30 15:30:01] info [rpc.56] Found running server (pid=1106040)
+[2023-11-30 15:36:31] info [rpc.55] Disposed of connection to running server.
+[2023-11-30 16:56:48] info [rpc.56] Disposed of connection to running server.
+[2023-11-30 16:59:37] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 9
+[2023-11-30 16:59:37] info [russh::server] wrote id
+[2023-11-30 16:59:37] info [russh::server] read other id
+[2023-11-30 16:59:37] info [russh::server] session is running
+[2023-11-30 16:59:38] info [rpc.57] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-30 16:59:38] info [rpc.57] Found running server (pid=1106040)
+[2023-11-30 17:04:02] info [rpc.57] Disposed of connection to running server.
+[2023-11-30 17:04:15] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 10
+[2023-11-30 17:04:15] info [russh::server] wrote id
+[2023-11-30 17:04:15] info [russh::server] read other id
+[2023-11-30 17:04:15] info [russh::server] session is running
+[2023-11-30 17:04:17] info [rpc.58] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-30 17:04:17] info [rpc.58] Found running server (pid=1106040)
+[2023-11-30 17:33:56] info [rpc.58] Disposed of connection to running server.
+[2023-11-30 17:34:08] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 11
+[2023-11-30 17:34:08] info [russh::server] wrote id
+[2023-11-30 17:34:08] info [russh::server] read other id
+[2023-11-30 17:34:08] info [russh::server] session is running
+[2023-11-30 17:34:18] info [rpc.59] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-30 17:34:18] info [rpc.59] Found running server (pid=1106040)
+[2023-11-30 17:34:29] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 12
+[2023-11-30 17:34:29] info [russh::server] wrote id
+[2023-11-30 17:34:29] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 13
+[2023-11-30 17:34:29] info [russh::server] wrote id
+[2023-11-30 17:34:29] info [russh::server] read other id
+[2023-11-30 17:34:29] info [russh::server] session is running
+[2023-11-30 17:34:29] info [russh::server] read other id
+[2023-11-30 17:34:29] info [russh::server] session is running
+[2023-11-30 17:34:44] info [rpc.59] Forwarding port 43295
+[2023-11-30 17:34:44] info [rpc.59] Forwarding port 37451
+[2023-11-30 17:36:37] info [rpc.60] Disposed of connection to running server.
+[2023-11-30 17:36:37] info [rpc.61] Disposed of connection to running server.
+[2023-11-30 17:36:52] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 14
+[2023-11-30 17:36:52] info [russh::server] wrote id
+[2023-11-30 17:36:53] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 15
+[2023-11-30 17:36:53] info [russh::server] wrote id
+[2023-11-30 17:36:53] info [russh::server] read other id
+[2023-11-30 17:36:53] info [russh::server] session is running
+[2023-11-30 17:36:53] info [russh::server] read other id
+[2023-11-30 17:36:53] info [russh::server] session is running
+[2023-11-30 17:42:42] info [rpc.62] Disposed of connection to running server.
+[2023-11-30 17:42:42] info [rpc.63] Disposed of connection to running server.
+[2023-11-30 17:43:12] info [rpc.59] Disposed of connection to running server.
+[2023-11-30 17:44:05] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 16
+[2023-11-30 17:44:05] info [russh::server] wrote id
+[2023-11-30 17:44:05] info [russh::server] read other id
+[2023-11-30 17:44:05] info [russh::server] session is running
+[2023-11-30 17:44:11] info [rpc.64] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-30 17:44:11] info [rpc.64] Found running server (pid=1106040)
+[2023-11-30 17:44:16] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 17
+[2023-11-30 17:44:16] info [russh::server] wrote id
+[2023-11-30 17:44:16] info [russh::server] read other id
+[2023-11-30 17:44:16] info [russh::server] session is running
+[2023-11-30 17:44:16] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 18
+[2023-11-30 17:44:16] info [russh::server] wrote id
+[2023-11-30 17:44:20] info [russh::server] read other id
+[2023-11-30 17:44:20] info [russh::server] session is running
+[2023-11-30 20:00:02] info [rpc.64] Disposed of connection to running server.
+[2023-11-30 20:00:29] info [rpc.66] Disposed of connection to running server.
+[2023-11-30 20:00:40] info [rpc.65] Disposed of connection to running server.
+[2023-11-30 21:43:27] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 19
+[2023-11-30 21:43:27] info [russh::server] wrote id
+[2023-11-30 21:43:27] info [russh::server] read other id
+[2023-11-30 21:43:27] info [russh::server] session is running
+[2023-11-30 21:43:28] info [rpc.67] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-11-30 21:43:28] info [rpc.67] Found running server (pid=1106040)
+[2023-11-30 21:59:05] info [rpc.67] Disposed of connection to running server.
+[2023-12-01 06:11:04] info [tunnels::connections::relay_tunnel_host] Opened new client on channel 20
+[2023-12-01 06:11:04] info [russh::server] wrote id
+[2023-12-01 06:11:04] info [russh::server] read other id
+[2023-12-01 06:11:04] info [russh::server] session is running
+[2023-12-01 06:11:05] info [rpc.68] Checking /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/log.txt and /home/jaredrussell/.vscode/cli/servers/Stable-1a5daa3a0231a0fbba4f14db7ec463cf99d7768e/pid.txt for a running server...
+[2023-12-01 06:11:05] info [rpc.68] Starting server...
+[2023-12-01 06:11:05] info [rpc.68] Server started
+[2023-12-01 06:11:06] warn [rpc.68] error handling call: NoAttachedServerError(NoAttachedServerError)
+[2023-12-01 06:27:59] info [rpc.68] Disposed of connection to running server.
