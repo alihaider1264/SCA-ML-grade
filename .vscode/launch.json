@@ -13,8 +13,8 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             //include launch arguments
-            //"args": ["-i","~/SPDataset/MiniTestingDataset"],
-            "args": ["-i", "/mnt/SPDrive/SPGenerations/Tokens/1699020236"]
+            "args": ["-i","~/SPDataset/MiniTestingDataset"],
+            //"args": ["-i", "/mnt/SPDrive/SPGenerations/Tokens/1699020236"]
         }
     ]
 }
