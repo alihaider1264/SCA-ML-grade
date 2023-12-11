@@ -62,7 +62,7 @@ def getFiles(foldersToProcess,path):
     inputFolder = path
     filesToIndex = []
     for folder in foldersToProcess:
-        filesToIndex.append(mcall.searchFileName(os.path.join(path,folder), "0.cpp"))
+        filesToIndex.append(mcall.searchFileName(os.path.join(path,folder), "0.py"))
     return filesToIndex
 
 def getGitInfo(gitInfoPath):
@@ -72,10 +72,10 @@ def getGitInfo(gitInfoPath):
 
 #This expects a folder full of .py files and .json files with files names corisponding to numbers such as 0,1,2
 #If there's missing files we expect them to be because of duplicates or the file getting deleted at some point
-def getFilesToGradeFromRevisionFolder(FolderPath, codeExtension=".cpp", jsonExtension=".json"):
+def getFilesToGradeFromRevisionFolder(FolderPath, codeExtension=".py", jsonExtension=".json"):
     # check to see if it's a dir or a file, if it's a file strip it
     if os.path.isfile(FolderPath):
-        FolderPath = FolderPath.split("0.cpp")[0]
+        FolderPath = FolderPath.split("0.py")[0]
     # List the files in a directory
     filesToGradeList = []
     deletedFile = False
@@ -87,7 +87,7 @@ def getFilesToGradeFromRevisionFolder(FolderPath, codeExtension=".cpp", jsonExte
                     if os.path.exists(json_file):
                         filesToGradeList.append([entry.path, json_file])
                     else:
-                        if entry.name == "DELETED.cpp":
+                        if entry.name == "DELETED.py":
                             deletedFile = True
             # sort the files in numerical order
             filesToGradeList.sort(key=lambda x: int(os.path.basename(x[0]).split(".")[0]))
