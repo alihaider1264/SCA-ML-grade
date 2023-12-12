@@ -33,8 +33,7 @@ keepGit = False #To Impliment, will keep the git files for later use
 skipForks = True #To Impliment, will skip forks. For now SEART has the option. 
 maxThreads = 20
 fileTypes = [".py"]
-fileTypes = [".cpp"]
-repolimit = 0
+#fileTypes = [".cpp"]
 repolimit = 250
 
 
