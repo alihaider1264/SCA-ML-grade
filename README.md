@@ -20,4 +20,4 @@ While LLMs are amazing, and provide many benefits over our approach, we believe 
     ├── Repo-Collector            # Script and Libraries to download repositories used for training and testing
 
 ## Get Started Generating Your Own Model
-To get started, navigate to https://seart-ghs.si.usi.ch/ and download a JSON file of repositories for training off of. Then, use the Repo-Collector utility to download the repositories in that JSON file. For more infromation on how to do this, navigate to "/Repo-Collector/Readme.md". 
+To get started, navigate to https://seart-ghs.si.usi.ch/ and download a JSON file of repositories for training off of. Then, use the Repo-Collector utility to download the repositories in that JSON file. For more infromation on how to do this, navigate to "/Repo-Collector/Readme.md". Then, run the genModelPrereqs.sh file with your Repo Downloads folder as the first argument, and an output folder as your second argument. Preforming this will have you ready to go to the Model Generation readme, and follow the instructions there.
