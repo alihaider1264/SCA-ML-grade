@@ -21,3 +21,6 @@ While LLMs are amazing, and provide many benefits over our approach, we believe 
 
 ## Get Started Generating Your Own Model
 To get started, navigate to https://seart-ghs.si.usi.ch/ and download a JSON file of repositories for training off of. Then, use the Repo-Collector utility to download the repositories in that JSON file. For more infromation on how to do this, navigate to "/Repo-Collector/Readme.md". Then, run the genModelPrereqs.sh file with your Repo Downloads folder as the first argument, and an output folder as your second argument. Preforming this will have you ready to go to the Model Generation readme, and follow the instructions there.
+
+## Commit Structure
+As we make changes to this repository, we are continuing developing and testing new models and addessing their pperformance. To help maintain clairty, we attempt to adhear to the following structure. Commits which include the word "Model" usually signify that a commit contains both a model creation notebook and corresponding model testing, synchronized with each other. This means the model creation notebook remains unchanged from when we generated the model being evaluated in the testing notebooks. This should allow a easy way to keep track of what changes are causing improvements and regressions.
