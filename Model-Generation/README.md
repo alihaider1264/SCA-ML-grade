@@ -9,3 +9,6 @@ To generate a model, you much generate the genModelPrereqs.sh file at the root o
 
 ## Model Testing Usage
 To test a model, you need to use the Model Testing Notebook. The first cell contains code to load previous testing results. The second cell contains variables you can set. At a minimum, pathToModelFolder and pathToDataFolder need to be set. For applicable results, please ensure that you have only new data in the testing data folder. By default, this will use the latest model created. This will preform tests by comparing older commits to newer commits. Most importantly, it has a "Gap" test at the bottom which is how we mostly mesure the models performance. 
+
+## Geeks4Geeks Testing Usage
+To see how a model preforms on unmodified, randomly collected public data, we have devised tests which use Geeks4Geeks practice problems, and their submissions. To collect this data, please refer to https://github.com/mcallbosco/g4gPPS . 
