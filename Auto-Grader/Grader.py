@@ -43,6 +43,7 @@ posKeyWordScoresUsed = 0
 posKeyWordScoresFilesAffected = 0
 posKeyWordsBigImpatUsed = 0
 posKeyWordBigImpactFilesAffected = 0
+specificHashDowngraded = 0
 
 negKeyWordScoresUsed = 0
 
@@ -187,6 +188,7 @@ def commitFolderGrading(filesToGradeList, repoBaseScore, commitsLowerLimit = 5):
     global negKeyWordScoresUsed
     global prevCommitScoresUsed
     global commitScoresUsed
+    global specificHashDowngraded
     #
 
     #filesToGradeList is formatted as [code path, json path]
@@ -210,6 +212,7 @@ def commitFolderGrading(filesToGradeList, repoBaseScore, commitsLowerLimit = 5):
         except Exception as e:
             print(f"Error opening {currentJSONFilePath}: {e}")
             continue
+        commitHash = commitinfo.get("hash")
 
         # get the number of contributors
         # Formatting = "msg": "UI vision refactor (#2115)\n\n* refactor vision\r\n\r\n* don't show slow frame message when in preview mode\r\n\r\n* change draws to uint32_t\r\n\r\n* set vision_seen=false after destroy\r\n\r\n* remove vision_connect_thread\r\n\r\n* refactor ui_update\r\n\r\n* seelp 30ms when vision is not connected\r\n\r\n* remove should_swap\r\n\r\n* call ui_update_sizes before ui_draw\r\n\r\n* rebase\r\n\r\n* start bigger UI refactor\r\n\r\n* don't need the touch fd\r\n\r\n* fix qt build\r\n\r\n* more cleanup\r\n\r\n* more responsive\r\n\r\n* more refactor\r\n\r\n* fix for pc\r\n\r\n* poll for frames\r\n\r\n* lower CPU usage\r\n\r\n* cleanup\r\n\r\n* no more zmq\r\n\r\n* undo that\r\n\r\n* cleanup speed limit\r\n\r\n* fix sidebar severity for athena status\r\n\r\n* not aarch64\r\n\r\nCo-authored-by: deanlee <deanlee3@gmail.com>\r\nCo-authored-by: Comma Device <device@comma.ai>\r\nCo-authored-by: Willem Melching <willem.melching@gmail.com>"
@@ -257,14 +260,42 @@ def commitFolderGrading(filesToGradeList, repoBaseScore, commitsLowerLimit = 5):
                 prevCommitScoresUsed = prevCommitScoresUsed + 1
 
         if (prevCommitAdjustment != 0):
-            #add prevCommitAdjustment to the previous commit
-            prevCommitsToAdjust = 1
-            if (i > prevCommitsToAdjust - 1):
-                for j in range(prevCommitsToAdjust):
-                    commitGrade[i - j - 1][0] = commitGrade[i - j - 1][0] + prevCommitAdjustment
+            useFallback = True
+            deleteBadCommit = True
+            #Check for "This reverts commit" message
+            if "This reverts commit" in commitMSG:
+                commitBeingReverted = commitMSG.split("This reverts commit ")[1].split(".")[0]
+                #strip anything after the hash
+                if len(commitBeingReverted) > 40:
+                    commitBeingReverted = commitBeingReverted[:40]
+                #find the commit being reverted
+                for commitGradeIndex in range(len(commitGrade)):
+                    if commitGrade[commitGradeIndex][2] == commitBeingReverted:
+                        if deleteBadCommit:
+                            #delete the bad commit
+                            commitGrade.pop(commitGradeIndex)
+                        else:
+                            commitGrade[commitGradeIndex][0] = commitGrade[commitGradeIndex][0] + (prevCommitAdjustment*1.5)
+                        specificHashDowngraded = specificHashDowngraded + 1
+                        useFallback = False
+                        break
+            if useFallback:
+                
+                #add prevCommitAdjustment to the previous commit
+                prevCommitsToAdjust = 1
+                if (i > prevCommitsToAdjust - 1):
+                    for j in range(prevCommitsToAdjust):
+                        if deleteBadCommit:
+                            #delete the bad commit
+                            try:
+                                commitGrade.pop(i - j - 1)
+                            except: 
+                                pass
+                        else:
+                            commitGrade[i - j - 1][0] = commitGrade[i - j - 1][0] + prevCommitAdjustment
 
-            #stats
-            prevCommitScoresUsed = prevCommitScoresUsed + 1
+                #stats
+                prevCommitScoresUsed = prevCommitScoresUsed + 1
             
 
         topBaseScoreAddition = 50
@@ -291,13 +322,17 @@ def commitFolderGrading(filesToGradeList, repoBaseScore, commitsLowerLimit = 5):
         if finalGrade < 0:
             finalGrade = 0
         finalPath = filesToGradeList[i][0].split(inputFolder)[1]
-        commitGrade.append([finalGrade, finalPath])
+        commitGrade.append([finalGrade, finalPath, commitHash])
     #clear any empty rows
     commitGrade = [x for x in commitGrade if x != []]
     #hide futurewarning
     import warnings
     warnings.simplefilter(action='ignore', category=FutureWarning)
+    #make commitGrade only have the first 2 columns
+    if (len(commitGrade) > 0):
+        commitGrade = np.array(commitGrade)[:, :2]
     df = pd.concat([df, pd.DataFrame(commitGrade, columns=['fileGrade', 'Path'])], ignore_index=True)
+    
     return (commitGrade)
         
 
@@ -350,6 +385,8 @@ def bootstrap(inputFolder, outputFolder = None, dateAsFileName = False):
     else :
         print (length)
         print (df)
+        print ("Specific Hashes Downgraded: " + str(specificHashDowngraded))
+        print("Other downgrades: " + str(prevCommitScoresUsed))
         
     #end time
     endTime = time.time()

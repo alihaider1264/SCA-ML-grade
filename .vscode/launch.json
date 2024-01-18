@@ -13,7 +13,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             //include launch arguments
-            "args": ["-i","~/SPDataset/MiniTestingDataset"],
+            "args": ["-i","~/SPDataset/smallDataset/S2DS245-1014"],
             //"args": ["-i", "/mnt/SPDrive/SPGenerations/Tokens/1699020236"]
         }
     ]
