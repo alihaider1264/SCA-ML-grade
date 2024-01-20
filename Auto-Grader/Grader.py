@@ -329,9 +329,11 @@ def commitFolderGrading(filesToGradeList, repoBaseScore, commitsLowerLimit = 5):
     import warnings
     warnings.simplefilter(action='ignore', category=FutureWarning)
     #make commitGrade only have the first 2 columns
-    if (len(commitGrade) > 0):
-        commitGrade = np.array(commitGrade)[:, :2]
-    df = pd.concat([df, pd.DataFrame(commitGrade, columns=['fileGrade', 'Path'])], ignore_index=True)
+    commitGradeToAppend = []
+    for commit in commitGrade:
+        commitGradeToAppend.append(commit[:2])
+    if (len(commitGradeToAppend) > 0):
+        df = pd.concat([df, pd.DataFrame(commitGradeToAppend, columns=['fileGrade', 'Path'])], ignore_index=True)
     
     return (commitGrade)
         
