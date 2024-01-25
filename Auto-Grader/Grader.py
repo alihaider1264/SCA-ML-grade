@@ -261,7 +261,7 @@ def commitFolderGrading(filesToGradeList, repoBaseScore, commitsLowerLimit = 5):
 
         if (prevCommitAdjustment != 0):
             useFallback = True
-            deleteBadCommit = True
+            deleteBadCommit = False
             #Check for "This reverts commit" message
             if "This reverts commit" in commitMSG:
                 commitBeingReverted = commitMSG.split("This reverts commit ")[1].split(".")[0]
