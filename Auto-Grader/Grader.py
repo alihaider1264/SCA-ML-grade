@@ -26,7 +26,7 @@ negitiveKeywordImpact = 0
 threads = 16
 
 prevCommitScoreAdjustmentNegitiveKeyWords = ['revert','reverted','reverting','reverts', 'undo', 'undid', 'undone', 'undoing']
-prevCommitScoreAdjustmentNegitiveKeyWordsValue = -10
+prevCommitScoreAdjustmentNegitiveKeyWordsValue = -15
 df = pd.DataFrame(columns=['fileGrade', 'Path'])
 
 #Stats about what the grader is doing
@@ -260,7 +260,7 @@ def commitFolderGrading(filesToGradeList, repoBaseScore, commitsLowerLimit = 5):
                 prevCommitScoresUsed = prevCommitScoresUsed + 1
 
         if (prevCommitAdjustment != 0):
-            useFallback = False
+            useFallback = True
             deleteBadCommit = False
             #Check for "This reverts commit" message
             if "This reverts commit" in commitMSG:
