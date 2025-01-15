@@ -1,3 +1,10 @@
 
 *.pyc
 nohup.out
+nohup.out
+ipykernal/lib64
+ipykernal/pyvenv.cfg
+ipykernal/bin/python
+ipykernal/bin/python3
+ipykernal/bin/python3.10
+nohup.out
